@@ -1,12 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-
+from format import format_description
 
 
 '''Определение адреса и заголовков'''
 
-url = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
+# url = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
+url = 'https://prices.appleinsider.com/macbook-air-2022'
 
 headers = {'accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'}
@@ -20,8 +21,8 @@ def get_data_for_ai(url, headers):
 
     soup = BeautifulSoup(html_code.text, 'lxml')
 
-    with open('apple_insider.html', 'w') as f:
-        f.write(html_code.text)
+    # with open('apple_insider.html', 'w') as f:
+    #     f.write(html_code.text)
 
 
     """Определение названий магазинов"""
@@ -47,8 +48,8 @@ def get_data_for_ai(url, headers):
 
         all_prices = row.find_all('td', class_=re.compile('item-price'))
         row_desc = row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', '')
-        row_link = row.find('td', class_='item-desc').get('href')
-
+        row_link = row.find('td', class_='item-desc').find('a').get('href')
+        
         """Проходимся по ценам """
 
         for price in all_prices:
@@ -63,14 +64,15 @@ def get_data_for_ai(url, headers):
                 store = store_names[counter]
 
                 if best_price == 'place order' and store == 'adorama':
-                    best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]))
-                    all_MBs_data_AI.append([row_desc,  best_price, store])
+                    best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]    ))
+                    if row_desc not in all_MBs_data_AI:
+                        all_MBs_data_AI.append(row_desc)#,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
                     
                 else:
-                    all_MBs_data_AI.append([row_desc,  best_price, store])
+                    if row_desc not in all_MBs_data_AI:
+                        all_MBs_data_AI.append(row_desc)#,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
             
             elif 'blue-bold' in class_name:
-
                 """Выявляем лучшую цену без использованием купона"""
 
                 best_price = price.text
@@ -78,9 +80,20 @@ def get_data_for_ai(url, headers):
 
                 if best_price == 'place order' and store == 'adorama':
                     best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]))
-                    all_MBs_data_AI.append([row_desc,  best_price, store])
+                    if row_desc not in all_MBs_data_AI:
+                        all_MBs_data_AI.append(row_desc)#,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
 
                 else:
-                    all_MBs_data_AI.append([row_desc,  best_price, store])
+                    if row_desc not in all_MBs_data_AI:
+                        all_MBs_data_AI.append(row_desc)#,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
+    # print(len(all_rows))
+    # print(len(all_MBs_data_AI))
+    # print(all_MBs_data_AI)
     return all_MBs_data_AI
                 
+
+print(get_data_for_ai(url, headers))
+
+
+
+
