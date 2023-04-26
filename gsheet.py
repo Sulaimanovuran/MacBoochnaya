@@ -1,28 +1,49 @@
 import gspread
-from parsing_ai import get_data_for_ai, url as url1, headers
-from parsing_tf import get_data_for_tf, url as url2
-all_MBs_data_AI = get_data_for_ai(url1, headers)
-all_MBs_data_TF = get_data_for_tf(url2)
+from parsing_ai import get_data_for_ai, headers
+from parsing_tf import get_data_for_tf
+from format import get_need_models
 
-# Создаем пустой словарь для хранения товаров и цен
-products = {}
+ai_pro14 = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
+ai_air = 'https://prices.appleinsider.com/macbook-air-2022'
 
-# Проходим по первому списку и добавляем товары и цены в словарь
-for product in all_MBs_data_AI:
-    products[product[0]] = [product[1], 'n/a']
+tf_pro14 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
+tf_air = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
 
-# Проходим по второму списку и добавляем цены к существующим товарам или создаем новые
-for product in all_MBs_data_TF:
-    if product[0] in products:
-        products[product[0]].pop()
-        products[product[0]].append(product[1])
-        # products[product[0]].append('n/a')
-    else:
-        products[product[0]] = ['n/a',product[1]]
+# ai_urls = [ai_pro14, ai_air]
+# tf_urls = [tf_pro14, tf_air]
 
-result  = [[k] + [j for j in v] for k, v in products.items()]
+pro14_from_ai = get_data_for_ai(ai_pro14, headers)
+air_from_ai = get_data_for_ai(ai_air, headers)
 
 
+pro14_from_tf = get_data_for_tf(tf_pro14)
+air_from_tf = get_data_for_tf(tf_air)
+
+
+#Создаем списки нужных нам моделей
+
+need_pro_list = [
+    'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Space Gray',
+    'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Silver',
+
+    'MacBook Pro 14 M2 Pro (12-CPU 19-GPU) 16/1TB Space Gray', 
+    'MacBook Pro 14 M2 Pro (12-CPU 19-GPU) 16/1TB Silver',
+
+    'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Space Gray',
+    'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Silver',]
+
+need_air_list = [
+    'MacBook Air M2 8/256 Space Gray',
+    'MacBook Air M2 8/256 Silver',
+    'MacBook Air M2 8/256 Starlight',
+    'MacBook Air M2 8/256 Midnight',
+]
+
+
+
+
+validated_pro = get_need_models(pro14_from_ai, pro14_from_tf, need_pro_list)
+validated_air = get_need_models(air_from_ai, air_from_tf, need_air_list)
 
 def main(): 
   """Авторизация"""
@@ -34,16 +55,29 @@ def main():
   """Подключаемся к странице"""
   wks = sh.worksheet('MacData')
   wks.batch_clear(["A3:C101"])
-#   wks.update('F19:H25', res)
+
   """Обновляем записи в указанном диапазоне"""
-#   wks.update('A3:D101',  result)
-  wks.update('A3:C101', result, value_input_option='USER_ENTERED')
-  wks.update('E1:I101', all_MBs_data_AI,value_input_option='USER_ENTERED')
-  
-#   wks.update_acell('E84', '=HYPERLINK("https://prices.appleinsider.com/product/macbook-pro-14-inch-2023/Z17G002K8";"$6049.0")')
+  coll_nums = len(validated_pro) + 2
+
+  wks.update(f'A3:C{coll_nums}', validated_pro , value_input_option='USER_ENTERED')
+  coll_nums += 2
+
+  wks.update(f'A{coll_nums}:C{coll_nums}', [["MacBook Air","AppleInsider","Tacsafon"]])
+
+  wks.format(f'A{coll_nums}:C{coll_nums}', {
+      "backgroundColor": {
+        "red": 50,
+        "green": 50,
+        "blue": 50
+      },
+      "textFormat":{
+       "fontSize": 12,
+        "bold": True}
+  })
+  wks.update(f'A{coll_nums+1}:C{coll_nums + 1 + len(validated_air)+1}', validated_air, value_input_option='USER_ENTERED')
   
   """Задаем формат"""
-  wks.format("A3:A101", {
+  wks.format(f"A3:A{len(validated_pro)}", {
       "backgroundColor": {
         "red": 1,
         "green": 1,
@@ -89,6 +123,7 @@ import time
 
 if __name__ == '__main__':
     main()
+    print('Обновление записей')
     # while True:
     #     # time.sleep(5)
     #     main()
