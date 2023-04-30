@@ -1,15 +1,15 @@
 import requests
 from bs4 import BeautifulSoup
-from format import format_description, format_price, format_description_air
+from format import format_description_pro, format_price, format_description_air
 
-url = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
-# url = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
+# url = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
+url = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
 
 def get_data_for_tf(url):
     
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
-    func_for_formatting = format_description_air if 'air' in url else format_description
+    func_for_formatting = format_description_air if 'air' in url else format_description_pro
     name_arr = []
     price_arr = []
 
@@ -34,4 +34,8 @@ def get_data_for_tf(url):
     return all_MBs_data_TF
 
 
-# get_data_for_tf(url)
+get_data_for_tf(url)
+
+['MacBook Air M2 8/256 Space Gray', '1\xa0140']
+['MacBook Air M2 8/256 Midnight', '1\xa0140']
+['MacBook Air M2 24/1TB Midnight', 'MacBook Air M2 16/1TB Starlight', 'MacBook Air M1 8/256 Space Gray']

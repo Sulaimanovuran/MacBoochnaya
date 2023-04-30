@@ -11,24 +11,22 @@ num = string.digits
 need = ['Max','CPU','GPU']
 hard = ['8GB','16GB','32GB','64GB','96GB']
 
-def format_description(description) -> str:
+def format_description_pro(description, flag=None) -> str:
     colors = ['starlight', 'midnight', 'silver', 'space', 'gray']
     ru_colors = ['сияющая', 'звезда', 'полночь', 'серый', 'космос', 'полночь', 'серебристый']
-    CPU_variations = ['10core', '12core', '8core', '10C', '12C', '8C', ]
-    GPU_variations = ['14core', '16core', '19core', '30core','32core', '38core', '14C', '16C', '19C', '30C', '32C', '38C']
+    CPU_variations = ['10core', '12core', '8core', '10C', '12C', '8C', '10CPU', '12CPU', '8CPU',]
+    GPU_variations = ['14core', '16core', '19core', '30core','32core', '38core', '14C', '16C', '19C', '30C', '32C', '38C', '14GPU', '16GPU', '19GPU', '30GPU', '32GPU', '38GPU']
     inches = ['14', '16', '13', '13.6']
 
     new_string = re.sub(r'[^\w\s.]', '', description)
     
     description = new_string.split(' ')
-    # print(description)
     memory = []
     chip = ''
     color = ''
     model = ''
     cgpu = ''
     inch = ''
-
     for word in description:
         if word in ('Apple', 'MacBook', 'CPU', 'GPU'):
             continue
@@ -54,6 +52,15 @@ def format_description(description) -> str:
             if len(word) > 5:
                 memory.append(word[0]+'TB')
                 continue
+
+            elif flag and any(['10-CPU 16-GPU' in cgpu, '12-CPU 19-GPU' in cgpu]):
+                memory+=['16', word.replace('GB', '')]
+                continue
+
+            elif flag and '12-CPU 30-GPU' in cgpu:
+                memory+=['32', word]
+                continue
+
             else:
                 memory.append(word.replace('GB', ''))
                 continue
@@ -82,8 +89,7 @@ def format_description(description) -> str:
 
     return f'MacBook Pro 14 {chip} {model} {cgpu} {"/".join(memory)} {color}'
 
-
-def format_description_air(description) -> str:
+def format_description_air(description, flag=None) -> str:
     colors = ['starlight', 'midnight', 'silver', 'space', 'gray']
     ru_colors = ['сияющая', 'звезда', 'полночь', 'космос', 'полночь', 'серебристый']
     new_string = re.sub(r'[^\w\s.]', '', description)
@@ -95,8 +101,12 @@ def format_description_air(description) -> str:
 
     for word in description:
         if 'GB' in word or 'TB' in word:
+            if flag:
+                memory+=['8', word.replace('GB', '')]
+                continue
             memory.append(word.replace('GB', ''))
             continue
+
         if 'M1' in word or 'M2' in word:
             chip.append(word)
             continue
@@ -123,35 +133,76 @@ def format_description_air(description) -> str:
     return f'MacBook Air {chip[0] if len(chip) != 0 else None} {"/".join(memory)} {color[0] if len(color) != 0 else None}'
 
 
-
 def format_price(price):
     usd = int(price.split()[0])/data
     return ('$'+str(round(usd,2)))
 
 
 
-def get_need_models(models1, models2, need_models):
+def get_need_models(models1, models2, models3=None, need_models=None):
+    # for model in models1:
+    #     if model[0] in need_models:
+    #         print(model[0])
+
+    # print('******************')
+    # for model in models2:
+    #     if model[0] in need_models:
+    #         print(model[0])
+    # print('******************')
+
+    # for model in models3:
+    #     if model[0] in need_models:
+    #         print(model[0])
     # Создаем пустой словарь для хранения товаров и цен
     products = {}
 
     # Проходим по первому списку и добавляем товары и цены в словарь
     for product in models1:
         if product[0] in need_models:
-            products[product[0]] = [product[1], 'n/a'] 
+            products[product[0]] = [product[1], 'n/a']
 
     # Проходим по второму списку и добавляем цены к существующим товарам или создаем новые
     for product in models2:
         if product[0] in products and product[0] in need_models:
-            products[product[0]].pop()
+            products[product[0]].pop(-1)
             products[product[0]].append(product[1])
+            products[product[0]].append('n/a')
+
 
         else:
             if product[0] in need_models:
-                products[product[0]] = ['n/a',product[1]]
+                products[product[0]] = ['n/a', product[1], 'n/a']
+
+    if models3:
+        for product in models3:
+            if product[0] in products and product[0] in need_models:
+                products[product[0]].pop(-1)
+                products[product[0]].append('$'+product[1])
+            else:
+                if product[0] in need_models:
+                    products[product[0]] = ['n/a','n/a', '$'+product[1]]
+
 
     result  = [[k] + [j for j in v] for k, v in products.items()]
     return result
 
+
+def func(list1, list2, list3=None, item_names=None):
+
+    products = {}
+
+    for item in item_names:
+        products[item] = []
+        for lst in [list1, list2, list3]:
+            for sub_lst in lst:
+                if sub_lst[0] == item:
+                    products[item].append('$'+sub_lst[1] if '$' not in sub_lst[1] else sub_lst[1])
+                    break
+            else:
+                products[item].append("n/a")
+
+    result  = [[k] + [j for j in v] for k, v in products.items()]
+    return result
 '''
 def format_description(text):
     new_ = 'MacBook '
