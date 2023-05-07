@@ -50,10 +50,12 @@ def get_data_for_ai(url, headers):
 
         all_prices = row.find_all('td', class_=re.compile('item-price'))
         # row_desc = row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', '')
+        
         if 'air' in url or 'Air' in url:
             row_desc = format_description_air(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
         else:
             row_desc = format_description_pro(description=row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
+
         row_link = row.find('td', class_='item-desc').find('a').get('href')
         
         """Проходимся по ценам """
@@ -73,12 +75,12 @@ def get_data_for_ai(url, headers):
                     best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]    ))
                     if row_desc not in all_MBs_data_AI:
                         # all_MBs_data_AI.append(row_desc)
-                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])#,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
+                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
                     
                 else:
                     if row_desc not in all_MBs_data_AI:
                         # all_MBs_data_AI.append(row_desc)
-                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])#,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
+                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
             
             elif 'blue-bold' in class_name:
                 """Выявляем лучшую цену без использованием купона"""
@@ -90,7 +92,7 @@ def get_data_for_ai(url, headers):
                     best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]))
                     if row_desc not in all_MBs_data_AI:
                         # all_MBs_data_AI.append(row_desc)
-                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])#,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
+                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
 
                 else:
                     if row_desc not in all_MBs_data_AI:

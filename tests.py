@@ -1,5 +1,5 @@
 import re
-
+import requests
 
 
 list1 = ['Apple MacBook Pro 14” MMQX3 (2021, Apple M1 Max 10C CPU, 32C GPU, 64GB, 2048GB SSD) серебристый', 
@@ -30,7 +30,7 @@ list3 = ...
 def format_description_pro(description, flag=None) -> str:
     colors = ['starlight', 'midnight', 'silver', 'space', 'gray']
     ru_colors = ['сияющая', 'звезда', 'полночь', 'серый', 'космос', 'полночь', 'серебристый']
-    CPU_variations = ['10core', '12core', '8core', '10C', '12C', '8C', '10CPU', '12CPU', '8CPU',]
+    CPU_variations = ['10core', '12core', '8core', '10C', '12C', '8C', '10CPU', '12CPU', '8CPU','10Core', '12Core', '8Core']
     GPU_variations = ['14core', '16core', '19core', '30core','32core', '38core', '14C', '16C', '19C', '30C', '32C', '38C', '14GPU', '16GPU', '19GPU', '30GPU', '32GPU', '38GPU']
     inches = ['14', '16', '13', '13.6']
 
@@ -50,7 +50,7 @@ def format_description_pro(description, flag=None) -> str:
         if word in CPU_variations:
             cgpu += f"({re.sub(r'[a-zA-Z]', '', word)}-CPU "
             continue
-        if word in GPU_variations :
+        if word in GPU_variations and ')' not in cgpu:
             cgpu += f"{re.sub(r'[a-zA-Z]', '', word)}-GPU)"
             continue
 
@@ -78,7 +78,7 @@ def format_description_pro(description, flag=None) -> str:
                 continue
 
             else:
-                memory.append(word.replace('GB', ''))
+                memory.append(word.replace('GB', '')) if len(memory) < 2 else ...
                 continue
 
         '''Определение чипа'''
@@ -105,7 +105,7 @@ def format_description_pro(description, flag=None) -> str:
 
     return f'MacBook Pro 14 {chip} {model} {cgpu} {"/".join(memory)} {color}'
 
-print(format_description_pro('M2 Pro (12-core CPU, 19-core GPU), 32GB, 512GB, Silver', ))
+# print(format_description_pro('M2 Pro (12-core CPU, 19-core GPU), 32GB, 512GB, Silver', ))
 
 
 # for i in list2:
@@ -133,7 +133,8 @@ def format_description_air(description, flag=None) -> str:
             if flag:
                 memory+=['8', word.replace('GB', '')]
                 continue
-            memory.append(word.replace('GB', ''))
+            
+            memory.append(word.replace('GB', '')) if len(memory) < 2 else ...
             continue
 
         if 'M1' in word or 'M2' in word:
@@ -197,3 +198,14 @@ def func(list1, list2, list3=None, item_names=None):
             else:
                 result[item].append("n/a")
                 
+
+from googletrans import Translator
+
+
+
+translator = Translator()
+
+
+currency = requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()
+
+print(currency)

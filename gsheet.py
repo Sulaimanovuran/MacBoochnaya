@@ -11,8 +11,6 @@ ai_air = 'https://prices.appleinsider.com/macbook-air-2022'
 tf_pro14 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
 tf_air = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
 
-# ai_urls = [ai_pro14, ai_air]
-# tf_urls = [tf_pro14, tf_air]
 
 pro14_from_ai = get_data_for_ai(ai_pro14, headers)
 air_from_ai = get_data_for_ai(ai_air, headers)
@@ -56,7 +54,7 @@ def main():
     sh = sa.open("MacPython")
 
     """Подключаемся к странице"""
-    wks = sh.worksheet('MacData')
+    wks = sh.worksheet('TestData')
     wks.batch_clear(["A3:D101"])
 
     """Обновляем записи в указанном диапазоне"""
