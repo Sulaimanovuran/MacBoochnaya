@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import re
 from format import format_description_air, format_description_pro
 
+currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['USD'].get('Value'),4)
+
 
 '''Определение адреса и заголовков'''
 
@@ -36,7 +38,7 @@ def get_data_for_ai(url, headers):
 
     all_rows = soup.find_all('tr', class_='item-row')[:90]
 
-    all_MBs_data_AI = []
+    all_MBs_data_AI = {}
 
     """Запуск цикла для каждой строки"""
 
@@ -72,16 +74,13 @@ def get_data_for_ai(url, headers):
                 store = store_names[counter]
 
                 if best_price == 'place order' and store == 'adorama':
-                    best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]    ))
-                    if row_desc not in all_MBs_data_AI:
-                        # all_MBs_data_AI.append(row_desc)
-                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
+                    best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]), 2))
+                    price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+
+
+                    all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
                     
-                else:
-                    if row_desc not in all_MBs_data_AI:
-                        # all_MBs_data_AI.append(row_desc)
-                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
-            
+
             elif 'blue-bold' in class_name:
                 """Выявляем лучшую цену без использованием купона"""
 
@@ -90,15 +89,15 @@ def get_data_for_ai(url, headers):
 
                 if best_price == 'place order' and store == 'adorama':
                     best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]))
-                    if row_desc not in all_MBs_data_AI:
-                        # all_MBs_data_AI.append(row_desc)
-                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
+                    price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+
+                    all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
 
                 else:
-                    if row_desc not in all_MBs_data_AI:
-                        # all_MBs_data_AI.append(row_desc)
-                        all_MBs_data_AI.append([row_desc,  f'=ГИПЕРССЫЛКА("{row_link}";"{best_price}")'])
+                    price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+                    all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
     return all_MBs_data_AI
+
 
 
 #cb + 4%

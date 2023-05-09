@@ -208,4 +208,78 @@ translator = Translator()
 
 currency = requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()
 
-print(currency)
+from parsing_ai import get_data_for_ai, url as url_ai, headers
+from parsing_da import get_data_for_da, url as url_da
+
+need_pro_list = [
+    'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Space Gray',
+    'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Silver',
+
+    'MacBook Pro 14 M2 Pro (12-CPU 19-GPU) 16/1TB Space Gray',
+    'MacBook Pro 14 M2 Pro (12-CPU 19-GPU) 16/1TB Silver',
+
+    'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Space Gray',
+    'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Silver'
+    ]
+
+
+def create_merged_dict(list_of_dicts, need_list):
+    merged_dict = {}
+    counter = 0
+    for d in list_of_dicts:
+        for key, value in d.items():
+            if key not in merged_dict and key in need_list:
+                merged_dict[key] = [value]
+            else:
+                if key in need_list:
+                    merged_dict[key].append(value)
+                    counter +=1
+    need_macs_data = []
+
+    for desc, prices in merged_dict.items():
+        for prc in prices:
+            if len(prc) > 2:
+                prc = [f'=HYPERLINK("{prc[2]}", "{prc[0]}")', f'=HYPERLINK("{prc[2]}", "{prc[1]}")']
+    
+    for key, value in merged_dict.items():
+        need_macs_data.append([key] + [price for price in value])
+    return need_macs_data
+
+
+
+
+
+
+
+
+
+# list_of_dicts = [get_data_for_ai(url_ai, headers=headers),get_data_for_da(url_da)]
+# merged_dict = create_merged_dict(list_of_dicts, need_pro_list)
+
+
+# ai = get_data_for_ai(url_ai, headers=headers)
+# da = get_data_for_da(url_da)
+
+
+# for i in merged_dict:
+#     print(i)
+
+
+
+d = {'hello': [1,2,3], 'John': [2,4,5]}
+
+for k, v in d.items():
+    for i in v:
+        v = i**2
+
+print(d)
+
+'''
+ref             da
+
+FGND3LL         MGND3KH/A
+FLY43LL/A       MLY43KH/A 
+FLXY3LL/A       MLXW3KH/A
+
+
+'''
