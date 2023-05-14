@@ -23,11 +23,10 @@ macs_ref = get_data_for_ref(ref_pro)
 #     for k, v in macs_dict.items():
 
 
-lst = [
-    {'product1': [1500, 11000, 'link'], 'product2':[2000, 20200, 'link'], 'product3': [3000, 34344, 'link'], 'product4': [4000, 322323]},
-    {'product1': [1200, 12000, 'link'], 'product5':[2400, 30200, 'link'], 'product3': [3300, 44344, 'link'], 'product8': [6000, 722323, 'link']},
-    {'product5': [1600, 17000, 'link'], 'product4':[4000, 322323,], 'product3': [3000, 34344, 'link'], 'product7': [4400, 342323, 'link']},
-    ]
+# lst = [
+#     {'product1': [1500, 11000, 'link'], 'product2':[2000, 20200, 'link'], 'product3': [3000, 34344, 'link'], 'product4': [4000, 322323]},
+#     {'product1': [1200, 12000, 'link'], 'product5':[2400, 30200, 'link'], 'product3': [3300, 44344, 'link'], 'product8': [6000, 722323, 'link']},
+#     {'product5': [1600, 17000, 'link'], 'product4':[4000, 322323,], 'product3': [3000, 34344, 'link'], 'product7': [4400, 342323, 'link']},
+#     ]
 
-for i in lst:
-    
+# for i in lst:
