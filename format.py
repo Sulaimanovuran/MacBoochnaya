@@ -1,6 +1,7 @@
 import string
 import requests
 import re
+import math
 
 data = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['USD'].get('Value'),2)
 
@@ -11,7 +12,7 @@ need = ['Max','CPU','GPU']
 hard = ['8GB','16GB','32GB','64GB','96GB']
 
 def format_description_pro(description, flag=None) -> str:
-    colors = ['starlight', 'midnight', 'silver', 'space', 'gray']
+    colors = ['silver', 'space', 'gray']
     ru_colors = ['сияющая', 'звезда', 'полночь', 'серый', 'космос', 'полночь', 'серебристый']
     CPU_variations = ['10core', '12core', '8core', '10C', '12C', '8C', '10CPU', '12CPU', '8CPU',]
     GPU_variations = ['14core', '16core', '19core', '30core','32core', '38core', '14C', '16C', '19C', '30C', '32C', '38C', '14GPU', '16GPU', '19GPU', '30GPU', '32GPU', '38GPU']
@@ -30,10 +31,10 @@ def format_description_pro(description, flag=None) -> str:
         if word in ('Apple', 'MacBook', 'CPU', 'GPU'):
             continue
         '''Определение процессора'''
-        if word in CPU_variations:
+        if word in CPU_variations or word.lower().replace('-','') in CPU_variations:
             cgpu += f"({re.sub(r'[a-zA-Z]', '', word)}-CPU "
             continue
-        if word in GPU_variations :
+        if word in GPU_variations or word.lower().replace('-','') in GPU_variations:
             cgpu += f"{re.sub(r'[a-zA-Z]', '', word)}-GPU)"
             continue
 
@@ -137,53 +138,64 @@ def format_price(price):
     return ('$'+str(round(usd,2)))
 
 
+def format_description_pro_ref(text):
+    ''' Разрешение экрана'''
+    res_pattern = r'(\d+(?:\.\d+)?)\s*-?\s*inch'
+    res_matches = re.findall(res_pattern, text)
+    if res_matches:
+        resolution = math.floor(float(res_matches[0]))
+    else:
+        resolution = None
 
-def get_need_models(models1, models2, models3=None, need_models=None):
-    # for model in models1:
-    #     if model[0] in need_models:
-    #         print(model[0])
+    '''CPU GPU'''
+    cpu_cores = None
+    gpu_cores = None
 
-    # print('******************')
-    # for model in models2:
-    #     if model[0] in need_models:
-    #         print(model[0])
-    # print('******************')
+    cpu_regex = re.compile(r'(\d+)[‑-]?Core\s+CPU', re.IGNORECASE)
+    gpu_regex = re.compile(r'(\d+)[‑-]?Core\s+GPU', re.IGNORECASE)
 
-    # for model in models3:
-    #     if model[0] in need_models:
-    #         print(model[0])
-    # Создаем пустой словарь для хранения товаров и цен
-    products = {}
+    cpu_match = cpu_regex.search(text)
+    if cpu_match:
+        cpu_cores = cpu_match.group(1)
 
-    # Проходим по первому списку и добавляем товары и цены в словарь
-    for product in models1:
-        if product[0] in need_models:
-            products[product[0]] = [product[1], 'n/a']
+    gpu_match = gpu_regex.search(text)
+    if gpu_match:
+        gpu_cores = gpu_match.group(1)
 
-    # Проходим по второму списку и добавляем цены к существующим товарам или создаем новые
-    for product in models2:
-        if product[0] in products and product[0] in need_models:
-            products[product[0]].pop(-1)
-            products[product[0]].append(product[1])
-            products[product[0]].append('n/a')
-
-
+    '''RAM Storage'''
+    rs_pattern = r'(\d+(?:\.\d+)?)\s*(?:TB|GB)\b'
+    rs_matches = re.findall(rs_pattern, text)
+    memory_capacity = ""
+    storage_capacity = ""
+    if rs_matches:
+        if len(rs_matches) >= 2:
+            memory_capacity = rs_matches[-2]
+            storage_capacity = rs_matches[-1]
+            if len(storage_capacity) <= 2:
+                storage_capacity = storage_capacity+'TB'
         else:
-            if product[0] in need_models:
-                products[product[0]] = ['n/a', product[1], 'n/a']
+            memory_capacity = rs_matches[-1]
+    
+    '''Chip and version'''
+    ch_pattern = r'(M[12])\s*(?:Chip\b\s*)?(Pro|Max)?'
+    matches = re.search(ch_pattern, text, re.IGNORECASE)
+    if matches:
+        chip_version = matches.group()
+        chip_version = re.sub(r'\bChip\b', '', chip_version)
+        chip_version = chip_version.strip()
+    else:
+        chip_version = ""
 
-    if models3:
-        for product in models3:
-            if product[0] in products and product[0] in need_models:
-                products[product[0]].pop(-1)
-                products[product[0]].append('$'+product[1])
-            else:
-                if product[0] in need_models:
-                    products[product[0]] = ['n/a','n/a', '$'+product[1]]
+    '''Color'''
+    color = ''
+    c_pattern = r'\b(silver|space gray|silver)\b'
+    match = re.search(c_pattern, text, flags=re.IGNORECASE)
+    if match:
+        color = match.group(0)
+    else:
+        color = None
 
-
-    result  = [[k] + [j for j in v] for k, v in products.items()]
-    return result
+    return f'MacBook Pro {resolution} {chip_version} ({cpu_cores}-CPU {gpu_cores}-GPU) {memory_capacity}/{storage_capacity} {color}'
 
 
 def func(list1, list2, list3=None, item_names=None):

@@ -148,7 +148,7 @@ def format_desc_air(text):
 
 
 
-print(format_desc_air('Refurbished 13.3-inch MacBook Air Apple M1 Chip with 8‑Core CPU and 7‑Core GPU'))
+# print(format_desc_air('Refurbished 13.3-inch MacBook Air Apple M1 Chip with 8‑Core CPU and 7‑Core GPU'))
 # import re
 
 lst = ["KRW 2,441,000 More price information 1st place 16GB, SSD 512GB", 

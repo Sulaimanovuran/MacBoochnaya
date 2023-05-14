@@ -266,20 +266,181 @@ def create_merged_dict(list_of_dicts, need_list):
 
 
 
-d = {'hello': [1,2,3], 'John': [2,4,5]}
+# d = {'hello': [1,2,3], 'John': [2,4,5]}
 
-for k, v in d.items():
-    for i in v:
-        v = i**2
+# for k, v in d.items():
+#     for i in v:
+#         v = i**2
 
-print(d)
-
+# print(d)
+# 
 '''
 ref             da
 
 FGND3LL         MGND3KH/A
 FLY43LL/A       MLY43KH/A 
 FLXY3LL/A       MLXW3KH/A
-
-
 '''
+
+
+############ Определение ядер ######################
+
+lst = ['Refurbished 14-inch MacBook Pro Apple M1 Pro Chip with 8‑Core CPU and 14‑Core GPU - Space GrayOverview Originally released October 2021 14.2inch diagonal Liquid Retina XDR display1 3024by1964 native resolution at 254 pixels per inch 16GB unified memory 512GB SSD 2 Touch ID 1080p FaceTime HD camera Three Thunderbolt 4 ports ',
+       'Refurbished 13-inch MacBook Pro Apple M2 Chip with 8‑Core CPU and 10‑Core GPU - SilverOverview Originally released June 2022 13.3inch diagonal LEDbacklit display with IPS technology 2560by1600 native resolution at 227 pixels per inch 16GB unified memory 512GB SSD¹ 720p FaceTime HD camera Two Thunderbolt USB 4 ports ',
+       'Refurbished 14-inch MacBook Pro Apple M1 Pro Chip with 10‑Core CPU and 14‑Core GPU - Space GrayOverview Originally released October 2021 14.2inch diagonal Liquid Retina XDR display1 3024by1964 native resolution at 254 pixels per inch 16GB unified memory 512GB SSD 2 Touch ID 1080p FaceTime HD camera Three Thunderbolt 4 ports ',
+       'Refurbished 13-inch MacBook Pro Apple M2 Chip with 8‑Core CPU and 10‑Core GPU - SilverOverview Originally released June 2022 13.3inch diagonal LEDbacklit display with IPS technology 2560by1600 native resolution at 227 pixels per inch 8GB unified memory 1TB SSD¹ 720p FaceTime HD camera Two Thunderbolt USB 4 ports']
+
+# for text in lst:
+
+#     cpu_cores = None
+#     gpu_cores = None
+
+#     cpu_regex = re.compile(r'(\d+)[‑-]?Core\s+CPU', re.IGNORECASE)
+#     gpu_regex = re.compile(r'(\d+)[‑-]?Core\s+GPU', re.IGNORECASE)
+
+#     cpu_match = cpu_regex.search(text)
+#     if cpu_match:
+#         cpu_cores = cpu_match.group(1)
+
+#     gpu_match = gpu_regex.search(text)
+#     if gpu_match:
+#         gpu_cores = gpu_match.group(1)
+
+    # print("CPU Cores:", cpu_cores)
+    # print("GPU Cores:", gpu_cores)
+    # print('############################################')
+
+
+
+############# Определение разрешения экрана
+
+import math
+import re
+
+def find_screen_resolution(description):
+    pattern = r'(\d+(?:\.\d+)?)\s*-?\s*inch'
+    matches = re.findall(pattern, description)
+    if matches:
+        return math.floor(float(matches[0]))
+    return None
+
+description = "Refurbished 13-inch MacBook Pro Apple M2 Chip with 8‑Core CPU and 10‑Core GPU - SilverOverview Originally released June 2022 13.3inch diagonal LEDbacklit display with IPS technology 2560by1600 native resolution at 227 pixels per inch 16GB unified memory 512GB SSD¹ 720p FaceTime HD camera Two Thunderbolt USB 4 ports"
+
+# resolution = find_screen_resolution(description)
+# print("Resolution (in inches):", resolution)
+
+
+################## Определение чипа и его версии
+def find_chip_version(description):
+    pattern = r'(M[12])\s*(?:Chip\b\s*)?(Pro|Max)?'
+    matches = re.search(pattern, description, re.IGNORECASE)
+    if matches:
+        chip_version = matches.group()
+        chip_version = re.sub(r'\bChip\b', '', chip_version)
+        return chip_version.strip()
+    return ""
+
+description = "Refurbished 13-inch MacBook Pro Apple M2 Chip with 8‑Core CPU and 10‑Core GPU - SilverOverview Originally released June 2022 13.3inch diagonal LEDbacklit display with IPS technology 2560by1600 native resolution at 227 pixels per inch 16GB unified memory 512GB SSD¹ 720p FaceTime HD camera Two Thunderbolt USB 4 ports"
+
+# chip_version = find_chip_version(description)
+# print("Chip Version:", [chip_version])
+
+
+
+############## Определение памяти 
+
+
+
+def find_capacity(description):
+    pattern = r'(\d+(?:\.\d+)?)\s*(?:TB|GB)\b'
+    matches = re.findall(pattern, description)
+    memory_capacity = ""
+    storage_capacity = ""
+    if matches:
+        if len(matches) >= 2:
+            memory_capacity = matches[-2]
+            storage_capacity = matches[-1]
+        else:
+            memory_capacity = matches[-1]
+    return memory_capacity, storage_capacity
+
+description = "Refurbished 13.3-inch MacBook Pro Apple M1 Chip with 8‑Core CPU and 8‑Core GPU - Space GrayOverview Originally released November 2020 13.3inch diagonal LEDbacklit display with IPS technology 2560by1600 native resolution at 227 pixels per inch 8GB unified memory 256GB SSD1 Touch Bar and Touch ID 720p FaceTime HD Camera "
+
+# memory_capacity, storage_capacity = find_capacity(description)
+
+
+################# Определение цвета
+
+
+
+def find_color(description):
+    pattern = r'\b(silver|space gray|silver)\b'
+    match = re.search(pattern, description, flags=re.IGNORECASE)
+    if match:
+        return match.group(0)
+    else:
+        return None
+
+description = "Refurbished 16-inch MacBook Pro Apple M2 Max Chip with 12‑Core CPU and 38‑Core GPU - Silver Overview Originally released January 2023 16.2inch diagonal Liquid Retina XDR display1 3456by2234 native resolution at 254 pixels per inch 96GB unified memory 8TB SSD2 Touch ID 1080p FaceTime HD camera Three Thunderbolt 4 USBC ports"
+
+# color = find_color(description)
+# print("Color:", color)
+
+def format_description_pro_ref(text):
+    ''' Разрешение экрана'''
+    res_pattern = r'(\d+(?:\.\d+)?)\s*-?\s*inch'
+    res_matches = re.findall(res_pattern, text)
+    if res_matches:
+        resolution = math.floor(float(res_matches[0]))
+    else:
+        resolution = None
+
+    '''CPU GPU'''
+    cpu_cores = None
+    gpu_cores = None
+
+    cpu_regex = re.compile(r'(\d+)[‑-]?Core\s+CPU', re.IGNORECASE)
+    gpu_regex = re.compile(r'(\d+)[‑-]?Core\s+GPU', re.IGNORECASE)
+
+    cpu_match = cpu_regex.search(text)
+    if cpu_match:
+        cpu_cores = cpu_match.group(1)
+
+    gpu_match = gpu_regex.search(text)
+    if gpu_match:
+        gpu_cores = gpu_match.group(1)
+
+    '''RAM Storage'''
+    rs_pattern = r'(\d+(?:\.\d+)?)\s*(?:TB|GB)\b'
+    rs_matches = re.findall(rs_pattern, text)
+    memory_capacity = ""
+    storage_capacity = ""
+    if rs_matches:
+        if len(rs_matches) >= 2:
+            memory_capacity = rs_matches[-2]
+            storage_capacity = rs_matches[-1]
+            if len(storage_capacity) <= 2:
+                storage_capacity = storage_capacity+'TB'
+        else:
+            memory_capacity = rs_matches[-1]
+    
+    '''Chip and version'''
+    ch_pattern = r'(M[12])\s*(?:Chip\b\s*)?(Pro|Max)?'
+    matches = re.search(ch_pattern, text, re.IGNORECASE)
+    if matches:
+        chip_version = matches.group()
+        chip_version = re.sub(r'\bChip\b', '', chip_version)
+        chip_version = chip_version.strip()
+    else:
+        chip_version = ""
+
+    '''Color'''
+    color = ''
+    c_pattern = r'\b(silver|space gray|silver)\b'
+    match = re.search(c_pattern, text, flags=re.IGNORECASE)
+    if match:
+        color = match.group(0)
+    else:
+        color = None
+
+    return f'MacBook Pro {resolution} {chip_version} ({cpu_cores}-CPU {gpu_cores}-GPU) {memory_capacity}/{storage_capacity} {color}'

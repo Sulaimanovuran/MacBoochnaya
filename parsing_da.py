@@ -17,7 +17,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36' 
 }
 
-def get_data_for_da(url, headres=None):
+def get_data_for_da(url, flag=None, headres=None):
     response = requests.get(url, headers=headers, verify=True)
 
     # file = open('danawa.html')
@@ -49,11 +49,9 @@ def get_data_for_da(url, headres=None):
         translated_text = re.sub(r'\s+(core)',r'\1',translator.translate(clean_text).text)
         clean_text2 = translated_text.replace(' Core', 'core')
         cleaned_data = re.sub(r'[^\w\s.+]', '', clean_text2)
-        # print(cleaned_data)
-        # print('######################################')
 
         description = format_desc_air(cleaned_data)
-        # print(description, end='\n\n')
+
         if description:
             """Обработка цен"""
             prices = product.find('div', class_='prod_pricelist').find_all('p', class_='price_sect')
