@@ -87,7 +87,7 @@ def get_data_for_ai(url, headers):
                 best_price = price.text
                 store = store_names[counter]
 
-                if best_price == 'place order' and store == 'adorama':
+                if best_price == 'place order':
                     best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]))
                     price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
 

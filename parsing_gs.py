@@ -36,4 +36,4 @@ def format_for_dict(mac_array):
 pro_from_gs = format_for_dict(all_MBs_data_GS_pro)
 air_from_gs = format_for_dict(all_MBs_data_GS_air)
 
-print(pro_from_gs)
+# print(pro_from_gs)

@@ -75,6 +75,7 @@ def format_desc_air(text):
     if pre_version:
         m_version = pre_version.group(1).title()
 
+    cpu_cores = None
     if m_version.lower() == 'air':
         cpu_regex = r"CPU .*?((Octa)?core|2core|4core)"
         cpu_match = re.search(cpu_regex, text)

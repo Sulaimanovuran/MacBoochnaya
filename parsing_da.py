@@ -50,7 +50,9 @@ def get_data_for_da(url, flag=None, headres=None):
         clean_text2 = translated_text.replace(' Core', 'core')
         cleaned_data = re.sub(r'[^\w\s.+]', '', clean_text2)
 
+        
         description = format_desc_air(cleaned_data)
+
 
         if description:
             """Обработка цен"""

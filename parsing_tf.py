@@ -24,7 +24,7 @@ def get_data_for_tf(url):
 
     for product1, product2 in zip(soup.find_all('div', {'class': 'product-price'}), soup.find_all('div', class_='product-top')):
         price = product1.find('div', {'class':'price-current'}).text.strip()
-        link = product2.find('div', class_='product-image').select_one('a').get('href')
+        link = 'https://tacsafon.ru'+product2.find('div', class_='product-name').find('a').get('href')
         price_usd = format_price(price)
         price_rub = re.sub(r"\D", "", price)
         price_arr.append([price_usd, price_rub, link])

@@ -3,22 +3,10 @@ import gspread
 from parsing_ai import get_data_for_ai, headers
 from parsing_tf import get_data_for_tf
 from parsing_gs import pro_from_gs, air_from_gs
-from format import get_need_models, func
-
-ai_pro14 = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
-ai_air = 'https://prices.appleinsider.com/macbook-air-2022'
-
-tf_pro14 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
-tf_air = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
-
-
-pro14_from_ai = get_data_for_ai(ai_pro14, headers)
-air_from_ai = get_data_for_ai(ai_air, headers)
-
-
-pro14_from_tf = get_data_for_tf(tf_pro14)
-air_from_tf = get_data_for_tf(tf_air)
-
+from gsheet_test import get_need_data
+from parsing_da import get_data_for_da, headers as head
+from parsing_ref import get_data_for_ref
+# from format import get_need_models, func
 
 # Создаем списки нужных нам моделей
 
@@ -40,10 +28,42 @@ need_air_list = [
 ]
 
 
-validated_pro = func(pro14_from_ai, pro14_from_tf,
-                     list3=pro_from_gs, item_names=need_pro_list)
-validated_air = func(air_from_ai, air_from_tf,
-                     list3=air_from_gs, item_names=need_air_list)
+
+ai_pro = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
+ai_air = 'https://prices.appleinsider.com/macbook-air-2022'
+
+pro_from_ai = get_data_for_ai(ai_pro, headers)
+air_from_ai = get_data_for_ai(ai_air, headers)
+
+
+tf_pro = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
+tf_air = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
+
+pro_from_tf = get_data_for_tf(tf_pro)
+air_from_tf = get_data_for_tf(tf_air)
+
+
+da_pro = 'https://prod.danawa.com/list/?cate=11336467'
+da_air = 'https://prod.danawa.com/list/?cate=11336468'
+
+pro_from_da = get_data_for_da(da_pro, headres=head)
+air_from_da = get_data_for_da(da_air, headres=head)
+
+
+ref = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
+
+pro_from_ref = get_data_for_ref(ref, need_pro_list, 'MacBook Pro')
+air_from_ref = get_data_for_ref(ref, need_air_list, 'MacBook Air')
+
+
+
+
+
+validated_pro = get_need_data([pro_from_ai, pro_from_da, pro_from_ref,pro_from_tf,
+                     pro_from_gs], need_pro_list)
+validated_air = get_need_data([air_from_ai, air_from_da, air_from_ref,air_from_tf,
+                     air_from_gs],need_air_list)
+
 
 
 def main():
@@ -55,19 +75,32 @@ def main():
 
     """Подключаемся к странице"""
     wks = sh.worksheet('TestData')
-    wks.batch_clear(["A3:D101"])
+    wks.batch_clear(["A3:K101"])
 
     """Обновляем записи в указанном диапазоне"""
     coll_nums = len(validated_pro) + 2
 
-    wks.update(f'A3:D{coll_nums}', validated_pro,
+    wks.update(f'A3:K{coll_nums}', validated_pro,
                value_input_option='USER_ENTERED')
     coll_nums += 2
 
-    wks.update(f'A{coll_nums}:D{coll_nums}', [
-               ["MacBook Air", "AppleInsider", "Tacsafon", "GSheet"]])
+    wks.merge_cells(f'B{coll_nums}:C{coll_nums}')
+    wks.update(f'B{coll_nums}:C{coll_nums}', 'Apple Insider')
 
-    wks.format(f'A{coll_nums}:D{coll_nums}', {
+    wks.merge_cells(f'D{coll_nums}:E{coll_nums}')
+    wks.update(f'D{coll_nums}:E{coll_nums}', 'Danawa')
+
+    wks.merge_cells(f'F{coll_nums}:G{coll_nums}')
+    wks.update(f'F{coll_nums}:G{coll_nums}', 'Apple Refurbished')
+
+    wks.merge_cells(f'H{coll_nums}:I{coll_nums}')
+    wks.update(f'H{coll_nums}:I{coll_nums}', 'TacSafon')
+
+    wks.merge_cells(f'J{coll_nums}:K{coll_nums}')
+    wks.update(f'J{coll_nums}:K{coll_nums}', 'Google Sheet')
+
+
+    wks.format(f'A{coll_nums}:K{coll_nums}', {
         "backgroundColor": {
             "red": 50,
             "green": 50,
@@ -77,29 +110,29 @@ def main():
             "fontSize": 12,
             "bold": True}
     })
-    wks.update(f'A{coll_nums+1}:D{coll_nums + 1 + len(validated_air)+1}',
+    wks.update(f'A{coll_nums+1}:K{coll_nums + 1 + len(validated_air)+1}',
                validated_air, value_input_option='USER_ENTERED')
 
-    """Задаем формат"""
-    wks.format(f"A3:A{len(validated_pro)}", {
-        "backgroundColor": {
-            "red": 1,
-            "green": 1,
-            "blue": 1
-        },
-        "horizontalAlignment": "LEFT",
-        "verticalAlignment": "TOP",
-        "wrapStrategy": "WRAP",
-        "textFormat": {
-            "foregroundColor": {
-                "red": 0,
-                "green": 0,
-                "blue": 0
-            },
-            "fontSize": 10,
-            "bold": False
-        }
-    })
+    # """Задаем формат"""
+    # wks.format(f"A3:A{len(validated_pro)}", {
+    #     "backgroundColor": {
+    #         "red": 1,
+    #         "green": 1,
+    #         "blue": 1
+    #     },
+    #     "horizontalAlignment": "LEFT",
+    #     "verticalAlignment": "TOP",
+    #     "wrapStrategy": "WRAP",
+    #     "textFormat": {
+    #         "foregroundColor": {
+    #             "red": 0,
+    #             "green": 0,
+    #             "blue": 0
+    #         },
+    #         "fontSize": 10,
+    #         "bold": False
+    #     }
+    # })
 
 
 if __name__ == '__main__':
