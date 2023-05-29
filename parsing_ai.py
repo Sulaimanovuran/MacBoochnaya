@@ -7,7 +7,8 @@ currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json
 
 
 '''Определение адреса и заголовков'''
-
+ai_pro_16 = "https://prices.appleinsider.com/macbook-pro-16-inch-2021"
+ai_pro_13 = "https://prices.appleinsider.com/macbook-pro-13-inch-2022"
 url = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
 # url = 'https://prices.appleinsider.com/macbook-air-2022'
 
@@ -60,10 +61,30 @@ def get_data_for_ai(url, headers):
             match = re.search(pattern, url)
             if match:
                 numbers = match.group(1)
-            row_desc = f'MacBook Pro {numbers} '+format_description_pro(description=row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
-        substring = 'blue-bold'
 
-        row_link = row.find('td', class_=lambda class_name: class_name and substring in class_name).find('a').get('href')
+
+            desc_dict = format_description_pro(description=row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
+            if numbers == '14':
+                row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} {desc_dict["chip_version"]} {desc_dict["cgpu"]} {desc_dict["memory"]} {desc_dict["color"]}'
+
+            elif numbers == '13':
+                if desc_dict['chip'] == 'M1':
+                    row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} (8-CPU 8-GPU) {desc_dict["memory"]} {desc_dict["color"]}'
+                elif desc_dict['chip'] == 'M2':
+                    row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} (8-CPU 10-GPU) {desc_dict["memory"]} {desc_dict["color"]}'
+
+            elif numbers == '16':
+                if desc_dict['chip'] == 'M1':
+                    row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} {desc_dict["chip_version"]} {desc_dict["cgpu"]} {desc_dict["memory"]} {desc_dict["color"]}'
+                elif desc_dict['chip'] == 'M2':
+                    row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} {desc_dict["chip_version"]} (12-CPU {desc_dict["cgpu"]} {desc_dict["memory"]} {desc_dict["color"]}'
+
+
+        substring = 'blue-bold'
+        try:
+            row_link = row.find('td', class_=lambda class_name: class_name and substring in class_name).find('a').get('href')
+        except AttributeError:
+            row_link = ...
         # row_link = row.find('td', class_='item-desc').find('a').get('href')
         
         """Проходимся по ценам """
@@ -106,4 +127,5 @@ def get_data_for_ai(url, headers):
 
 
 
-#cb + 4%
+for k in get_data_for_ai(ai_pro_16, headers).keys():
+    print(k)

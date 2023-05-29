@@ -12,10 +12,10 @@ from parsing_ref import get_data_for_ref
 
 
 need_pro_list = [
-    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/256 Space Gray',
-    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/256 Silver',
-    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/512 Space Gray',
-    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/512 Silver',
+    'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/256 Space Gray',
+    'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/256 Silver',
+    'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/512 Space Gray',
+    'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/512 Silver',
     'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Space Gray',
     'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Silver',
 
@@ -49,41 +49,41 @@ ai_air = 'https://prices.appleinsider.com/macbook-air-2022'
 
 pro_from_ai = get_data_for_ai(ai_pro, headers)
 pro_13_from_ai = get_data_for_ai(ai_pro_13, headers)
-# pro_16_from_ai = get_data_for_ai(ai_pro_16, headers)
-air_from_ai = get_data_for_ai(ai_air, headers)
+pro_16_from_ai = get_data_for_ai(ai_pro_16, headers)
+# air_from_ai = get_data_for_ai(ai_air, headers)
 
 
-tf_pro = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
-tf_pro_16 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-16"
-tf_pro_13 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-13"
-tf_air = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
+# tf_pro = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
+# tf_pro_16 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-16"
+# tf_pro_13 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-13"
+# tf_air = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
 
-pro_from_tf = get_data_for_tf(tf_pro)
-pro_13_from_tf = get_data_for_tf(tf_pro_13)
-# pro_16_from_tf = get_data_for_tf(tf_pro_16)
-air_from_tf = get_data_for_tf(tf_air)
-
-
-da_pro = 'https://prod.danawa.com/list/?cate=11336467'
-da_air = 'https://prod.danawa.com/list/?cate=11336468'
-
-pro_from_da = get_data_for_da(da_pro, headres=head)
-air_from_da = get_data_for_da(da_air, headres=head)
+# pro_from_tf = get_data_for_tf(tf_pro)
+# pro_13_from_tf = get_data_for_tf(tf_pro_13)
+# # pro_16_from_tf = get_data_for_tf(tf_pro_16)
+# air_from_tf = get_data_for_tf(tf_air)
 
 
-ref = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
+# da_pro = 'https://prod.danawa.com/list/?cate=11336467'
+# da_air = 'https://prod.danawa.com/list/?cate=11336468'
 
-pro_from_ref = get_data_for_ref(ref, need_pro_list, 'MacBook Pro')
-air_from_ref = get_data_for_ref(ref, need_air_list, 'MacBook Air')
+# pro_from_da = get_data_for_da(da_pro, headres=head)
+# air_from_da = get_data_for_da(da_air, headres=head)
 
 
+# ref = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
+
+# pro_from_ref = get_data_for_ref(ref, need_pro_list, 'MacBook Pro')
+# air_from_ref = get_data_for_ref(ref, need_air_list, 'MacBook Air')
 
 
 
-validated_pro = get_need_data([pro_from_ai, pro_13_from_ai,pro_from_da, pro_from_ref,pro_from_tf, pro_13_from_tf,
-                     pro_from_gs], need_pro_list)
-validated_air = get_need_data([air_from_ai, air_from_da, air_from_ref,air_from_tf,
-                     air_from_gs],need_air_list)
+validated_pro = get_need_data([pro_from_ai, pro_13_from_ai], need_pro_list)
+
+# validated_pro = get_need_data([pro_from_ai, pro_13_from_ai,pro_from_da, pro_from_ref,pro_from_tf, pro_13_from_tf,
+#                      pro_from_gs], need_pro_list)
+# validated_air = get_need_data([air_from_ai, air_from_da, air_from_ref,air_from_tf,
+#                      air_from_gs],need_air_list)
 
 
 
@@ -131,8 +131,8 @@ def main():
             "fontSize": 12,
             "bold": True}
     })
-    wks.update(f'A{coll_nums+1}:K{coll_nums + 1 + len(validated_air)+1}',
-               validated_air, value_input_option='USER_ENTERED')
+    # wks.update(f'A{coll_nums+1}:K{coll_nums + 1 + len(validated_air)+1}',
+    #            validated_air, value_input_option='USER_ENTERED')
 
     # """Задаем формат"""
     # wks.format(f"A3:A{len(validated_pro)}", {

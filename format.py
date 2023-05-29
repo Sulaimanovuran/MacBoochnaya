@@ -16,8 +16,7 @@ def format_description_pro(description, flag=None) -> str:
     ru_colors = ['сияющая', 'звезда', 'полночь', 'серый', 'космос', 'полночь', 'серебристый']
     CPU_variations = ['10core', '12core', '8core', '10C', '12C', '8C', '10CPU', '12CPU', '8CPU',]
     GPU_variations = ['14core', '16core', '19core', '30core','32core', '38core', '14C', '16C', '19C', '30C', '32C', '38C', '14GPU', '16GPU', '19GPU', '30GPU', '32GPU', '38GPU']
-    inches = ['14', '16', '13', '13.6']
-
+    text = description
     new_string = re.sub(r'[^\w\s.]', '', description)
     
     description = new_string.split(' ')
@@ -41,7 +40,7 @@ def format_description_pro(description, flag=None) -> str:
         '''Определение модели'''
         pattern = r"M[12]\s*(Pro|Max)?"
 
-        result = re.search(pattern, str(description))
+        result = re.search(pattern, text)
 
         if result:
             chip_version = result.group(1)
@@ -91,10 +90,18 @@ def format_description_pro(description, flag=None) -> str:
             else:
                 color = word if color == '' else None
 
-    if chip_version is not None:
-        return f'{chip} {chip_version} {cgpu} {"/".join(memory)} {color}'
-    else:
-        return f'{chip} {cgpu} {"/".join(memory)} {color}'
+    # if chip_version:
+    #     return f'{chip} {chip_version} {cgpu} {"/".join(memory)} {color}'
+    
+    # else:
+    #     return f'{chip} {cgpu} {"/".join(memory)} {color}'
+    return {'chip':chip, 'chip_version':chip_version, 'cgpu':cgpu, 'memory': '/'.join(memory), 'color': color}
+
+
+
+
+
+
 
 def format_description_air(description, flag=None) -> str:
     colors = ['starlight', 'midnight', 'silver', 'space', 'gray']
@@ -223,7 +230,7 @@ def func(list1, list2, list3=None, item_names=None):
     return result
 
 
-print(format_description_pro('M2 Max (12-core CPU, 30-core GPU), 32GB, 8TB, Space Gray'))
+# print(format_description_pro('M2 (12-core CPU, 30-core GPU), 32GB, 8TB, Space Gray'))
 
 '''
 def format_description(text):
