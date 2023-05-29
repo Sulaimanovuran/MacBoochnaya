@@ -46,21 +46,25 @@
 def get_need_data(lst, need_pro_list):
 
     result = {}
-
+    count= 0
     for dictionary in lst:
+        count+=1
         for product in need_pro_list:
-            if product in dictionary:
-                pre_prices = dictionary[product]
-                if len(pre_prices) == 3:
-                    prices = [f'=ГИПЕРССЫЛКА("{pre_prices[2]}";"{pre_prices[0]}")', f'=ГИПЕРССЫЛКА("{pre_prices[2]}";"{pre_prices[1]}")']
-                else:
-                    prices = pre_prices
-                if len(prices) == 2:
-                    result.setdefault(product, []).extend(prices)
+            if product is not None:
+                print(product, count, end="\n")
+                print(dictionary[product], end="\n\n")
+                if product in dictionary:
+                    pre_prices = dictionary[product]
+                    if len(pre_prices) == 3:
+                        prices = [f'=ГИПЕРССЫЛКА("{pre_prices[2]}";"{pre_prices[0]}")', pre_prices[1]]
+                    else:
+                        prices = pre_prices
+                    if len(prices) == 2:
+                        result.setdefault(product, []).extend(prices)
+                    else:
+                        result.setdefault(product, []).extend(['n/a', 'n/a'])
                 else:
                     result.setdefault(product, []).extend(['n/a', 'n/a'])
-            else:
-                result.setdefault(product, []).extend(['n/a', 'n/a'])
 
     for_gsheet = [[k] + v for k, v in result.items()]
     return for_gsheet

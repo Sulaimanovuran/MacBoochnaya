@@ -10,7 +10,12 @@ from parsing_ref import get_data_for_ref
 
 # Создаем списки нужных нам моделей
 
+
 need_pro_list = [
+    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/256 Space Gray',
+    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/256 Silver',
+    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/512 Space Gray',
+    'MacBook Pro 13 M2 Pro (10-CPU 16-GPU) 16/512 Silver',
     'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Space Gray',
     'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Silver',
 
@@ -25,21 +30,37 @@ need_air_list = [
     'MacBook Air M2 8/256 Silver',
     'MacBook Air M2 8/256 Starlight',
     'MacBook Air M2 8/256 Midnight',
+    'MacBook Air M2 16/256 Space Gray',
+    'MacBook Air M2 16/256 Silver',
+    'MacBook Air M2 16/512 Space Gray',
+    'MacBook Air M2 16/512 Silver',
+    'MacBook Air M2 24/512 Space Gray',
+    'MacBook Air M2 24/512 Silver',
+    'MacBook Air M2 24/256 Space Gray',
+    'MacBook Air M2 24/256 Silver',
 ]
 
 
 
 ai_pro = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
+ai_pro_16 = "https://prices.appleinsider.com/macbook-pro-16-inch-2023"
+ai_pro_13 = "https://prices.appleinsider.com/macbook-pro-13-inch-2022"
 ai_air = 'https://prices.appleinsider.com/macbook-air-2022'
 
 pro_from_ai = get_data_for_ai(ai_pro, headers)
+pro_13_from_ai = get_data_for_ai(ai_pro_13, headers)
+# pro_16_from_ai = get_data_for_ai(ai_pro_16, headers)
 air_from_ai = get_data_for_ai(ai_air, headers)
 
 
 tf_pro = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
+tf_pro_16 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-16"
+tf_pro_13 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-13"
 tf_air = 'https://tacsafon.ru/magazin/folder/apple-macbook-air'
 
 pro_from_tf = get_data_for_tf(tf_pro)
+pro_13_from_tf = get_data_for_tf(tf_pro_13)
+# pro_16_from_tf = get_data_for_tf(tf_pro_16)
 air_from_tf = get_data_for_tf(tf_air)
 
 
@@ -59,7 +80,7 @@ air_from_ref = get_data_for_ref(ref, need_air_list, 'MacBook Air')
 
 
 
-validated_pro = get_need_data([pro_from_ai, pro_from_da, pro_from_ref,pro_from_tf,
+validated_pro = get_need_data([pro_from_ai, pro_13_from_ai,pro_from_da, pro_from_ref,pro_from_tf, pro_13_from_tf,
                      pro_from_gs], need_pro_list)
 validated_air = get_need_data([air_from_ai, air_from_da, air_from_ref,air_from_tf,
                      air_from_gs],need_air_list)
@@ -74,7 +95,7 @@ def main():
     sh = sa.open("MacPython")
 
     """Подключаемся к странице"""
-    wks = sh.worksheet('TestData')
+    wks = sh.worksheet('TestData2')
     wks.batch_clear(["A3:K101"])
 
     """Обновляем записи в указанном диапазоне"""

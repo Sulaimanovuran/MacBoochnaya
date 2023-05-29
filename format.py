@@ -39,9 +39,14 @@ def format_description_pro(description, flag=None) -> str:
             continue
 
         '''Определение модели'''
-        if word == 'Pro' or word == 'Max':
-            model = word
-            continue
+        pattern = r"M[12]\s*(Pro|Max)?"
+
+        result = re.search(pattern, str(description))
+
+        if result:
+            chip_version = result.group(1)
+        else:
+            chip_version = None
 
         # '''Определение разрешения экрана'''
         # if word in inches:
@@ -86,8 +91,10 @@ def format_description_pro(description, flag=None) -> str:
             else:
                 color = word if color == '' else None
 
-
-    return f'MacBook Pro 14 {chip} {model} {cgpu} {"/".join(memory)} {color}'
+    if chip_version is not None:
+        return f'{chip} {chip_version} {cgpu} {"/".join(memory)} {color}'
+    else:M2 (12-CPU 30-GPU) 32/8TB Space Gray
+        return f'{chip} {cgpu} {"/".join(memory)} {color}'
 
 def format_description_air(description, flag=None) -> str:
     colors = ['starlight', 'midnight', 'silver', 'space', 'gray']
@@ -214,6 +221,10 @@ def func(list1, list2, list3=None, item_names=None):
 
     result  = [[k] + [j for j in v] for k, v in products.items()]
     return result
+
+
+print(format_description_pro('M2 Max (12-core CPU, 30-core GPU), 32GB, 8TB, Space Gray'))
+
 '''
 def format_description(text):
     new_ = 'MacBook '

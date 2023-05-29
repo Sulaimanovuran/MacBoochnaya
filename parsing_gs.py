@@ -23,9 +23,14 @@ def format_for_dict(mac_array):
     all_MBs_data_GS = {}
     for mac in mac_array:
         if 'Air' in mac[0]:
+
             description = format_description_air(mac[0], 1)
         else:
-            description = format_description_pro(mac[0], 1)
+            pattern = r'(\d+)\"'
+            match = re.search(pattern, mac[0])
+            if match:
+                numbers = match.group(1)
+                description = f'MacBook Pro {numbers} ' + format_description_pro(mac[0], 1)
 
         price = re.sub(r"[^\w\s\.\\xa0]", "", mac[1]).replace('\xa0', '')
         price_rub = round((int(price) * currency )* 1.045, 2)
@@ -37,3 +42,4 @@ pro_from_gs = format_for_dict(all_MBs_data_GS_pro)
 air_from_gs = format_for_dict(all_MBs_data_GS_air)
 
 # print(pro_from_gs)
+#Pro 14" M2 Pro 10-CPU 16-GPU 512GB Silver

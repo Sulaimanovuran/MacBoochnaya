@@ -18,7 +18,8 @@ def get_data_for_tf(url):
 
     for product in soup.find_all('div', {'class': 'product-top'}):
         name = product.find('div', {'class':'product-name'}).text.strip().replace(',', ' ')
-        name_arr.append(func_for_formatting(name))
+        if func_for_formatting == format_description_pro:
+            name_arr.append(f'MacBook Pro {url[-2:]} ' + func_for_formatting(name))
         # name_arr.append(name)
 
 

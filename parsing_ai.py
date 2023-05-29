@@ -36,8 +36,8 @@ def get_data_for_ai(url, headers):
 
     """Выявление всех объявлений"""
 
-    all_rows = soup.find_all('tr', class_='item-row')[:90]
-
+    all_rows_count = int(len(soup.find_all('tr', class_='item-row'))/2)
+    all_rows = soup.find_all('tr', class_='item-row')[:all_rows_count]
     all_MBs_data_AI = {}
 
     """Запуск цикла для каждой строки"""
@@ -56,9 +56,15 @@ def get_data_for_ai(url, headers):
         if 'air' in url or 'Air' in url:
             row_desc = format_description_air(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
         else:
-            row_desc = format_description_pro(description=row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
+            pattern = r'(\d+(?:\.\d+)?)\-inch'
+            match = re.search(pattern, url)
+            if match:
+                numbers = match.group(1)
+            row_desc = f'MacBook Pro {numbers} '+format_description_pro(description=row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
+        substring = 'blue-bold'
 
-        row_link = row.find('td', class_='item-desc').find('a').get('href')
+        row_link = row.find('td', class_=lambda class_name: class_name and substring in class_name).find('a').get('href')
+        # row_link = row.find('td', class_='item-desc').find('a').get('href')
         
         """Проходимся по ценам """
 
