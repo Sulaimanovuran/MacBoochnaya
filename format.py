@@ -93,7 +93,7 @@ def format_description_pro(description, flag=None) -> str:
 
     if chip_version is not None:
         return f'{chip} {chip_version} {cgpu} {"/".join(memory)} {color}'
-    else:M2 (12-CPU 30-GPU) 32/8TB Space Gray
+    else:
         return f'{chip} {cgpu} {"/".join(memory)} {color}'
 
 def format_description_air(description, flag=None) -> str:
