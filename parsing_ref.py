@@ -6,6 +6,7 @@ import string
 
 from format import format_description_air
 from tests import format_description_pro_ref
+from CHGPT import format_description_air as fda
 
 x = string.punctuation
 num = string.digits
@@ -33,16 +34,44 @@ def get_data_for_ref(url, need_list, flag):
             name = data_dict['data']['products'][0]['name']
             if flag == 'MacBook Pro':
                 description = format_description_pro_ref(name+" "+owerview)
+
             else:
-                description = format_description_air(name+" "+owerview)
-            
+                description = fda(name+" "+owerview)
+                if description in need_list:
+                    print(description)
+                
             if description in need_list:
                 macbooks[description] = [price, price_rub, card_url]
 
-            if need_macs_count == len(macbooks):
+
+            if len(macbooks) == len(need_list):
                 return macbooks
             
+    return macbooks
+        
+# get_data_for_ref(url, n)
 
+need_air_list = [
+    'MacBook Air M2 8-GPU 8/256 Space Gray',
+    'MacBook Air M2 8-GPU 8/256 Silver',
+    'MacBook Air M2 8-GPU 8/256 Starlight',
+    'MacBook Air M2 8-GPU 8/256 Midnight',
+    'MacBook Air M2 8-GPU 16/256 Space Gray',
+    'MacBook Air M2 8-GPU 16/256 Silver',
+    'MacBook Air M2 8-GPU 16/512 Space Gray',
+    'MacBook Air M2 8-GPU 16/512 Silver',
+    'MacBook Air M2 8-GPU 24/512 Space Gray',
+    'MacBook Air M2 8-GPU 24/512 Silver',
+    'MacBook Air M2 10-GPU 24/256 Space Gray',
+    'MacBook Air M2 10-GPU 24/256 Silver',
+]
+
+get_data_for_ref(url, need_air_list, flag='MacBook Air')
+
+
+# print(get_data_for_ref(url, need_air_list, 'Air'))
+# for k in get_data_for_ref(url, need_air_list, 'MacBook Air').items():
+#     print(k)
 
 
 

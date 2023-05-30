@@ -2,14 +2,15 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from format import format_description_air, format_description_pro
-
+from CHGPT import format_description_air as fda
 currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['USD'].get('Value'),4)
 
 
 '''Определение адреса и заголовков'''
-ai_pro_16 = "https://prices.appleinsider.com/macbook-pro-16-inch-2021"
-ai_pro_13 = "https://prices.appleinsider.com/macbook-pro-13-inch-2022"
+ai_pro_16 = "https://prices.appleinsider.com/macbook-pro-16-inch-2023"
+ai_pro_13 = "https://prices.appleinsider.com/macbook-pro-13-inch-late-2020"
 url = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
+url2 = 'https://prices.appleinsider.com/macbook-pro-14-inch-2021'
 # url = 'https://prices.appleinsider.com/macbook-air-2022'
 
 
@@ -42,7 +43,7 @@ def get_data_for_ai(url, headers):
     all_MBs_data_AI = {}
 
     """Запуск цикла для каждой строки"""
-
+    c = 0
     for row in all_rows:
 
         best_price = ''
@@ -55,7 +56,7 @@ def get_data_for_ai(url, headers):
         # row_desc = row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', '')
         
         if 'air' in url or 'Air' in url:
-            row_desc = format_description_air(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
+            row_desc = fda(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
         else:
             pattern = r'(\d+(?:\.\d+)?)\-inch'
             match = re.search(pattern, url)
@@ -81,51 +82,77 @@ def get_data_for_ai(url, headers):
 
 
         substring = 'blue-bold'
+
         try:
             row_link = row.find('td', class_=lambda class_name: class_name and substring in class_name).find('a').get('href')
         except AttributeError:
-            row_link = ...
+            row_link = row.find('td', class_='item-desc').find('a').get('href')
+            
         # row_link = row.find('td', class_='item-desc').find('a').get('href')
         
         """Проходимся по ценам """
 
-        for price in all_prices:
-            counter += 1
-            class_name = price.get('class')
+        try:
+            best_price = row.find('td', class_=re.compile('bold')).text
+            if 'place order' in best_price:
+                best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]), 2))
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+                all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+            else:
+                best_price = row.find('td', class_=re.compile('bold')).find('a').text
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+                all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+        except AttributeError:
+            
+            best_price = row.find('td', class_='item-price').text
+            if best_price.startswith('$'):
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+                all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
 
-            if 'coupon' in class_name and 'blue-bold' in class_name:
 
-                """Выявляем лучшую цену с использованием купона"""
+        # for price in all_prices:
+        #     counter += 1
+        #     class_name = price.get('class')
+        #     if 'coupon' in class_name and 'blue-bold' in class_name:
 
-                best_price = price.find('a', class_='coupon-link').text
-                store = store_names[counter]
+        #         """Выявляем лучшую цену с использованием купона"""
 
-                if best_price == 'place order' and store == 'adorama':
-                    best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]), 2))
-                    price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+        #         best_price = price.find('a', class_='coupon-link').text
+        #         store = store_names[counter]
+
+        #         if best_price == 'place order' and store == 'adorama':
+        #             best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]), 2))
+        #             price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
 
 
-                    all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+        #             all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
                     
 
-            elif 'blue-bold' in class_name:
-                """Выявляем лучшую цену без использованием купона"""
+        #     elif 'bold' in class_name:
+        #         """Выявляем лучшую цену без использованием купона"""
 
-                best_price = price.text
-                store = store_names[counter]
+        #         best_price = price.text
+        #         store = store_names[counter]
 
-                if best_price == 'place order':
-                    best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]))
-                    price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+        #         if best_price == 'place order':
+        #             best_price = '$' + str(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]))
+        #             price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
 
-                    all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+        #             all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
 
-                else:
-                    price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
-                    all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+        #         else:
+        #             price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+        #             all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+            
+        #     elif price.text.startswith('$'):
+        #         # best_price = row.find('td', class_='item-price').text
+        #         best_price = price.text
+        #         price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+        #         all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+
     return all_MBs_data_AI
 
 
 
-for k in get_data_for_ai(ai_pro_16, headers).keys():
-    print(k)
+# for k,v in get_data_for_ai(ai_pro_16, headers).items():
+# print(get_data_for_ai(url, headers))

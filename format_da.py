@@ -99,7 +99,7 @@ def format_desc_air(text):
 
 
     gpu_regex = re.compile(r"Graphics.*?(\d+)core")
-    gpu_cores = gpu_regex.search(text)
+    gpu_cores = gpu_regex.search(text.lower())
 
     if gpu_cores:
         gpu_cores = gpu_cores.group(1)
@@ -144,6 +144,14 @@ def format_desc_air(text):
         
     else:
         resolution = '?'
+    
+    if resolution < 14 and m_version == 'Pro':
+        if chip == 'M1':
+            cpu_cores = 8
+            gpu_cores = 8
+        elif chip == 'M2':
+            cpu_cores = 8
+            gpu_cores = 10
 
     return {'m_version': m_version, 'resolution': resolution, 'chip': chip, 'c_version': chip_version, 'cpu':cpu_cores, 'gpu': gpu_cores, 'color': color}
 

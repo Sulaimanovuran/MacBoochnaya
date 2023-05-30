@@ -15,7 +15,7 @@ def format_description_pro(description, flag=None) -> str:
     colors = ['silver', 'space', 'gray']
     ru_colors = ['сияющая', 'звезда', 'полночь', 'серый', 'космос', 'полночь', 'серебристый']
     CPU_variations = ['10core', '12core', '8core', '10C', '12C', '8C', '10CPU', '12CPU', '8CPU',]
-    GPU_variations = ['14core', '16core', '19core', '30core','32core', '38core', '14C', '16C', '19C', '30C', '32C', '38C', '14GPU', '16GPU', '19GPU', '30GPU', '32GPU', '38GPU']
+    GPU_variations = ['14core', '16core', '19core', '30core','32core', '38core', '24core','14C', '16C', '19C', '24C', '30C', '32C', '38C', '14GPU', '16GPU', '19GPU', '24GPU','30GPU', '32GPU', '38GPU', '14gpu', '16gpu', '19gpu', '24gpu','30gpu', '32gpu', '38gpu']
     text = description
     new_string = re.sub(r'[^\w\s.]', '', description)
     
@@ -87,6 +87,7 @@ def format_description_pro(description, flag=None) -> str:
             elif 'space' in word_check or 'gray' in word_check:
                 color = 'Space Gray'
                 continue
+
             else:
                 color = word if color == '' else None
 
@@ -104,7 +105,7 @@ def format_description_pro(description, flag=None) -> str:
 
 
 def format_description_air(description, flag=None) -> str:
-    colors = ['starlight', 'midnight', 'silver', 'space', 'gray']
+    colors = ['starlight', 'midnight', 'silver', 'space', 'gray', 'gold']
     ru_colors = ['сияющая', 'звезда', 'полночь', 'космос', 'полночь', 'серебристый']
     new_string = re.sub(r'[^\w\s.]', '', description)
     
@@ -124,6 +125,8 @@ def format_description_air(description, flag=None) -> str:
         if 'M1' in word or 'M2' in word:
             chip.append(word)
             continue
+
+        '''Определение цвета'''
         if word.lower() in colors or word.lower() in ru_colors:
             word_check = word.lower()
             if 'сияющая' in word_check and 'звезда' in word_check and len(color) == 0:
@@ -137,6 +140,12 @@ def format_description_air(description, flag=None) -> str:
                 continue
             elif 'серебристый' in word_check:
                 color.append('Silver')
+                continue
+            elif 'золотистый' in word_check:
+                color.append('Gold')
+                continue
+            elif 'gold' in word_check:
+                color.append('Gold')
                 continue
             elif 'space' in word_check or 'gray' in word_check and len(color) == 0:
                 color.append('Space Gray')

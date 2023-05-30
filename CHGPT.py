@@ -96,17 +96,111 @@ items = soup.find(class_=lambda class_name: class_name and substring in class_na
 # print(items)
 '''
 
+# import re
+
+# string = "M2 Max (12-core CPU, 30-core GPU), 32GB, 8TB, Space Gray"
+# pattern = r"M[12]\s*(Pro|Max)?"
+
+# result = re.search(pattern, string)
+
+# if result:
+#     substring = result.group(1)
+#     print(f"Найдена подстрока: {substring}")
+# else:
+#     print("Подстрока не найдена")
+
+
+desc_list = [
+    'M2 (8-core GPU), 8GB, 256GB, Midnight',
+    'M2 (10-core GPU), 8GB, 256GB, Silver',
+    'M2 (8-core GPU), 24GB, 2TB, Starlight',
+    'Apple MacBook Pro 13” Z16R0000E (2022, M2, 8C CPU 10C GPU, 16GB 1TB SSD, Touch Bar) «серый космос»',
+    'Apple MacBook Pro 13” Z16R0000D (2022, M2, 8C CPU 10C GPU, 16GB 512GB SSD, Touch Bar) «серый космос»',
+    'Refurbished 13.3-inch MacBook Air Apple M1 Chip with 8‑Core CPU and 7‑Core GPU - Gold Overview Originally released November 2020 13.3inch diagonal LEDbacklit display with IPS technology 2560by1600 native resolution at 227 pixels per inch 8GB unified memory 256GB SSD1 Touch ID sensor 720p FaceTime HD Camera',
+    'Refurbished 13.3-inch MacBook Air Apple M1 Chip with 8‑Core CPU and 8‑Core GPU - Space Gray Overview Originally released November 2020 13.3inch diagonal LEDbacklit display with IPS technology 2560by1600 native resolution at 227 pixels per inch 8GB unified memory 512GB SSD1 Touch ID sensor 720p FaceTime HD Camera',
+    'Refurbished 13-inch MacBook Air Apple M2 Chip with 8‑Core CPU and 10‑Core GPU - Space Gray Overview Originally released July 2022 13.6inch diagonal LEDbacklit display with IPS technology1 8GB unified memory 256GB SSD 2 1080p FaceTime HD camera Two Thunderbolt USB 4 ports',
+    'Refurbished 13-inch MacBook Air Apple M2 Chip with 8‑Core CPU and 10‑Core GPU - Midnight Overview Originally released July 2022 13.6inch diagonal LEDbacklit display with IPS technology1 8GB unified memory 512GB SSD 2 1080p FaceTime HD camera Two Thunderbolt USB 4 ports',
+    'M1 (7-core GPU), 8GB, 256GB, Space Gray',
+    'M1 (16GB, 1TB, 7-core GPU) Gold',
+    'M1 (16GB, 512GB, 8-core GPU) Silver',
+    'Air M2 8-CPU 8-GPU 256GB Midnight',
+    'Air M2 8-CPU 8-GPU 256GB Gray',
+    'Air M2 8-CPU 8-GPU | 16GB | 512GB Gray US',
+    'Air M1 8-CPU 7-GPU | 16GB |  256GB Gray KR 🇰🇷'
+]
 import re
 
-string = "M2 Max (12-core CPU, 30-core GPU), 32GB, 8TB, Space Gray"
-pattern = r"M[12]\s*(Pro|Max)?"
+def format_description_air(description, flag=None) -> str:
+    if flag and description.count('GB') > 1 or description.count('TB') > 0:
+        flag = None
+    colors = ['starlight', 'midnight', 'silver', 'space', 'gray', 'gold']
+    ru_colors = ['сияющая', 'звезда', 'полночь', 'космос', 'полночь', 'серебристый']
+    new_string = re.sub(r'[^\w\s.]', '', description)
+    # print(new_string, end='\n\n')
+    description = new_string.split(' ')
+    memory = []
+    chip = []
+    color = []
+    gpu_search = re.findall(r'(\d+core GPU|\d+C GPU|\d+Core GPU|\d+GPU)', new_string)[0]
+    gpu = re.sub(r'\D', '', gpu_search)
+    for word in description:
+        if 'GB' in word or 'TB' in word:
+            if flag:
+                memory+=['8', word.replace('GB', '')]
+                continue
+            memory.append(word.replace('GB', ''))
+            continue
 
-result = re.search(pattern, string)
+        if 'M1' in word or 'M2' in word:
+            chip.append(word)
+            continue
 
-if result:
-    substring = result.group(1)
-    print(f"Найдена подстрока: {substring}")
-else:
-    print("Подстрока не найдена")
+        
+        '''Определение цвета'''
+        if word.lower() in colors or word.lower() in ru_colors:
+            word_check = word.lower()
+            if 'сияющая' in word_check and 'звезда' in word_check and len(color) == 0:
+                color.append('Starlight')
+                continue
+            elif 'полночь' in word_check:
+                color.append('Midnight')
+                continue
+            elif 'серый' in word_check or 'космос' in word_check and len(color) == 0:
+                color.append('Space Gray')
+                continue
+            elif 'серебристый' in word_check:
+                color.append('Silver')
+                continue
+            elif 'золотистый' in word_check:
+                color.append('Gold')
+                continue
+            elif 'gold' in word_check:
+                color.append('Gold')
+                continue
+            elif 'space' in word_check or 'gray' in word_check and len(color) == 0:
+                color.append('Space Gray')
+            else:
+                color.append(word) if len(color) == 0 else ...
 
 
+    return f'MacBook Air {chip[0] if len(chip) != 0 else None} {gpu}-GPU {"/".join(memory)} {color[0] if len(color) != 0 else None}'
+
+
+# print(format_description_air('Air M2 8-CPU 8-GPU | 24GB |  256GB Gray KR'))
+
+# for i in desc_list:
+#     print('**************************', end='\n\n')
+#     print(format_description_air(i))
+    
+
+
+"8core GPU"
+"10C GPU"
+"7C GPU"
+"8C GPU"
+"7Core GPU"
+"8Core GPU"
+"10Core GPU"
+"7core GPU"
+"8GPU"
+"10GPU"

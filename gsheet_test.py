@@ -46,9 +46,9 @@
 def get_need_data(lst, need_list):
 
     result = {}
+    c = 0
     for dictionary in lst:
         for product in need_list:
-
             if product in dictionary:
                 pre_prices = dictionary[product]
                 if len(pre_prices) == 3:
@@ -64,7 +64,6 @@ def get_need_data(lst, need_list):
 
     for_gsheet = [[k] + v for k, v in result.items()]
     return for_gsheet
-
 
 
 

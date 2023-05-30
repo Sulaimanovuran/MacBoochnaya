@@ -5,13 +5,27 @@ from googletrans import Translator
 from format_da import format_desc_air
 
 currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['KRW'].get('Value'),4)
-
+need_air_list = [
+    'MacBook Air M2 8-GPU 8/256 Space Gray',
+    'MacBook Air M2 8-GPU 8/256 Silver',
+    'MacBook Air M2 8-GPU 8/256 Starlight',
+    'MacBook Air M2 8-GPU 8/256 Midnight',
+    'MacBook Air M2 8-GPU 16/256 Space Gray',
+    'MacBook Air M2 8-GPU 16/256 Silver',
+    'MacBook Air M2 10-GPU 16/512 Space Gray',
+    'MacBook Air M2 8-GPU 16/512 Silver',
+    'MacBook Air M2 8-GPU 24/512 Space Gray',
+    'MacBook Air M2 8-GPU 24/512 Silver',
+    'MacBook Air M2 10-GPU 24/256 Space Gray',
+    'MacBook Air M2 10-GPU 24/256 Silver',
+]
 
 
 translator = Translator()
+# da_pro_13 = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+13+m2'
 
-url = 'https://prod.danawa.com/list/?cate=11336467'
-# url = 'https://prod.danawa.com/list/?cate=11336468' #AIR
+# url = 'https://prod.danawa.com/list/?cate=11336467'
+url = 'https://prod.danawa.com/list/?cate=11336468' #AIR
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36' 
@@ -50,7 +64,6 @@ def get_data_for_da(url, flag=None, headres=None):
         clean_text2 = translated_text.replace(' Core', 'core')
         cleaned_data = re.sub(r'[^\w\s.+]', '', clean_text2)
 
-        
         description = format_desc_air(cleaned_data)
 
 
@@ -77,13 +90,18 @@ def get_data_for_da(url, flag=None, headres=None):
                 if description['m_version'] == 'Pro':
                     if m:
                         gpu = m.group(1)
-                        full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['c_version']} ({description['cpu']}-CPU {gpu}-GPU) {ram}/{storage} {description['color']}"
+                        if description['resolution'] < 14:
+                            full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} ({description['cpu']}-CPU {gpu}-GPU) {ram}/{storage} {description['color']}"
+                        else:
+                            full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['c_version']} ({description['cpu']}-CPU {gpu}-GPU) {ram}/{storage} {description['color']}"
                     
                     else:
-                        full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['c_version']} ({description['cpu']}-CPU {description['gpu']}-GPU) {ram}/{storage} {description['color']}"
+                        if description['resolution'] < 14:
+                            full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} ({description['cpu']}-CPU {description['gpu']}-GPU) {ram}/{storage} {description['color']}"
+                        else:
+                            full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['c_version']} ({description['cpu']}-CPU {description['gpu']}-GPU) {ram}/{storage} {description['color']}"
                 else:
-
-                    full_desc = f"MacBook {description['m_version']} {description['chip']} {ram}/{storage} {description['color']}"
+                    full_desc = f"MacBook {description['m_version']} {description['chip']} {description['gpu']}-GPU {ram}/{storage} {description['color']}"
 
                 if full_desc in macbooks_pro:
                     if price_rub < macbooks_pro[full_desc][1]:
@@ -92,7 +110,11 @@ def get_data_for_da(url, flag=None, headres=None):
                     macbooks_pro[full_desc] = [price, price_rub, link]
         else:
             continue
+        # if full_desc in need_air_list:
+        #     print(full_desc)
     return macbooks_pro        
+
+
 
 
 
