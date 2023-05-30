@@ -65,7 +65,7 @@ def get_data_for_da(url, flag=None, headres=None):
         cleaned_data = re.sub(r'[^\w\s.+]', '', clean_text2)
 
         description = format_desc_air(cleaned_data)
-
+        print(cleaned_data)
 
         if description:
             """Обработка цен"""
@@ -111,12 +111,14 @@ def get_data_for_da(url, flag=None, headres=None):
         else:
             continue
         # if full_desc in need_air_list:
-        #     print(full_desc)
-    return macbooks_pro        
+        print(full_desc)
+    return macbooks_pro
 
 
+da_air_m2 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+m2'
 
 
+get_data_for_da(da_air_m2, headres=headers)
 
     # price_list = re.sub(r'\b\d+\s*mall\s+product\s+comparison\b', '/', translator.translate(prices).text, flags=re.IGNORECASE).split('/')
 
