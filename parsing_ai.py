@@ -9,9 +9,9 @@ currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json
 '''Определение адреса и заголовков'''
 ai_pro_16 = "https://prices.appleinsider.com/macbook-pro-16-inch-2023"
 ai_pro_13 = "https://prices.appleinsider.com/macbook-pro-13-inch-late-2020"
-url = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
+# url = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
 url2 = 'https://prices.appleinsider.com/macbook-pro-14-inch-2021'
-# url = 'https://prices.appleinsider.com/macbook-air-2022'
+url = 'https://prices.appleinsider.com/macbook-air-2022'
 
 
 
@@ -33,7 +33,7 @@ def get_data_for_ai(url, headers):
 
     """Определение названий магазинов"""
 
-    store_names = [store.get('title') for store in soup.find('table', class_='price-guide').find('tr').find_all('th')[0:-1]]
+    # store_names = [store.get('title') for store in soup.find('table', class_='price-guide').find('tr').find_all('th')[0:-1]]
 
 
     """Выявление всех объявлений"""
@@ -67,16 +67,18 @@ def get_data_for_ai(url, headers):
             desc_dict = format_description_pro(description=row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
             if numbers == '14':
                 row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} {desc_dict["chip_version"]} {desc_dict["cgpu"]} {desc_dict["memory"]} {desc_dict["color"]}'
-
+                
             elif numbers == '13':
                 if desc_dict['chip'] == 'M1':
                     row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} (8-CPU 8-GPU) {desc_dict["memory"]} {desc_dict["color"]}'
+                    
                 elif desc_dict['chip'] == 'M2':
                     row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} (8-CPU 10-GPU) {desc_dict["memory"]} {desc_dict["color"]}'
 
             elif numbers == '16':
                 if desc_dict['chip'] == 'M1':
                     row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} {desc_dict["chip_version"]} {desc_dict["cgpu"]} {desc_dict["memory"]} {desc_dict["color"]}'
+                    
                 elif desc_dict['chip'] == 'M2':
                     row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} {desc_dict["chip_version"]} (12-CPU {desc_dict["cgpu"]} {desc_dict["memory"]} {desc_dict["color"]}'
 
@@ -110,7 +112,45 @@ def get_data_for_ai(url, headers):
                 all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
 
 
-        # for price in all_prices:
+        
+    return all_MBs_data_AI
+
+# get_data_for_ai('https://prices.appleinsider.com/macbook-pro-16-inch-2021', headers)
+
+# print('MacBook Pro 16 M1 Pro (10-CPU 16-GPU) 16/512 Silver' == 'MacBook Pro 16 M1 Pro (10-CPU 16-GPU) 16/512 Silver')
+# for k,v in get_data_for_ai(ai_pro_16, headers).items():
+# print(get_data_for_ai(url, headers))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+#####after 111 row
+
+
+ for price in all_prices:
         #     counter += 1
         #     class_name = price.get('class')
         #     if 'coupon' in class_name and 'blue-bold' in class_name:
@@ -150,9 +190,4 @@ def get_data_for_ai(url, headers):
         #         price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
         #         all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
 
-    return all_MBs_data_AI
-
-
-
-# for k,v in get_data_for_ai(ai_pro_16, headers).items():
-# print(get_data_for_ai(url, headers))
+'''

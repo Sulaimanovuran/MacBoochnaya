@@ -239,6 +239,69 @@ def func(list1, list2, list3=None, item_names=None):
     return result
 
 
+
+def format_description_air_ref(description, flag=None) -> str:
+    if flag and description.count('GB') > 1 or description.count('TB') > 0:
+        flag = None
+    colors = ['starlight', 'midnight', 'silver', 'space', 'gray', 'gold']
+    ru_colors = ['сияющая', 'звезда', 'полночь', 'космос', 'полночь', 'серебристый']
+    new_string = re.sub(r'[^\w\s.]', '', description)
+    description = new_string.split(' ')
+    memory = []
+    chip = []
+    color = []
+
+    gpu_search = re.compile(r'(\d+core GPU|\d+C GPU|\d+Core GPU|\d+GPU)')
+    gpu_cores = gpu_search.search(new_string)
+    if gpu_cores:
+        gpu_cores = gpu_cores.group(1)
+        gpu = re.sub(r'\D', '', gpu_cores)
+    else:
+        gpu_cores = "?"
+
+
+    for word in description:
+        if 'GB' in word or 'TB' in word:
+            if flag:
+                memory+=['8', word.replace('GB', '')]
+                
+            memory.append(word.replace('GB', ''))
+            
+
+        if 'M1' in word or 'M2' in word:
+            chip.append(word)
+            
+
+        
+        '''Определение цвета'''
+        if word.lower() in colors or word.lower() in ru_colors:
+            word_check = word.lower()
+            if 'сияющая' in word_check and 'звезда' in word_check and len(color) == 0:
+                color.append('Starlight')
+                
+            elif 'полночь' in word_check:
+                color.append('Midnight')
+                
+            elif 'серый' in word_check or 'космос' in word_check and len(color) == 0:
+                color.append('Space Gray')
+                
+            elif 'серебристый' in word_check:
+                color.append('Silver')
+                
+            elif 'золотистый' in word_check:
+                color.append('Gold')
+                
+            elif 'gold' in word_check:
+                color.append('Gold')
+
+            elif 'space' in word_check or 'gray' in word_check and len(color) == 0:
+                color.append('Space Gray')
+            else:
+                color.append(word) if len(color) == 0 else ...
+
+
+    return f'MacBook Air {chip[0] if len(chip) != 0 else None} {gpu}-GPU {"/".join(memory)} {color[0] if len(color) != 0 else None}'
+
 # print(format_description_pro('M2 (12-core CPU, 30-core GPU), 32GB, 8TB, Space Gray'))
 
 '''

@@ -31,7 +31,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36' 
 }
 
-def get_data_for_da(url, flag=None, headres=None):
+def get_data_for_da(url, flag=None, headres=None, coll_number=None):
     response = requests.get(url, headers=headers, verify=True)
 
     # file = open('danawa.html')
@@ -65,7 +65,7 @@ def get_data_for_da(url, flag=None, headres=None):
         cleaned_data = re.sub(r'[^\w\s.+]', '', clean_text2)
 
         description = format_desc_air(cleaned_data)
-        print(cleaned_data)
+        # print(cleaned_data, end='\n\n\n')
 
         if description:
             """Обработка цен"""
@@ -74,6 +74,7 @@ def get_data_for_da(url, flag=None, headres=None):
 
             for price_item, memory_item in zip(prices, memories):
                 test_price = price_item.find('strong').text.replace(',','')
+                # print(test_price)
                 if test_price.isdigit():
                     price = test_price
                     price_rub = round(int(price) * ((currency / 1000) * 1.045),2)
@@ -92,33 +93,65 @@ def get_data_for_da(url, flag=None, headres=None):
                         gpu = m.group(1)
                         if description['resolution'] < 14:
                             full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} ({description['cpu']}-CPU {gpu}-GPU) {ram}/{storage} {description['color']}"
+
+                            if full_desc in macbooks_pro:
+                                if price_rub < macbooks_pro[full_desc][1]:
+                                    macbooks_pro[full_desc] = [price, price_rub, link]
+                            else:
+                                macbooks_pro[full_desc] = [price, price_rub, link]
+
+
                         else:
                             full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['c_version']} ({description['cpu']}-CPU {gpu}-GPU) {ram}/{storage} {description['color']}"
-                    
+                            
+                            if full_desc in macbooks_pro:
+                                if price_rub < macbooks_pro[full_desc][1]:
+                                    macbooks_pro[full_desc] = [price, price_rub, link]
+                            else:
+                                macbooks_pro[full_desc] = [price, price_rub, link]
+
+
                     else:
                         if description['resolution'] < 14:
                             full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} ({description['cpu']}-CPU {description['gpu']}-GPU) {ram}/{storage} {description['color']}"
+
+                            if full_desc in macbooks_pro:
+                                if price_rub < macbooks_pro[full_desc][1]:
+                                    macbooks_pro[full_desc] = [price, price_rub, link]
+                            else:
+                                macbooks_pro[full_desc] = [price, price_rub, link]
+
+
                         else:
                             full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['c_version']} ({description['cpu']}-CPU {description['gpu']}-GPU) {ram}/{storage} {description['color']}"
+                            
+                            if full_desc in macbooks_pro:
+                                if price_rub < macbooks_pro[full_desc][1]:
+                                    macbooks_pro[full_desc] = [price, price_rub, link]
+                            else:
+                                macbooks_pro[full_desc] = [price, price_rub, link]
+
+
                 else:
                     full_desc = f"MacBook {description['m_version']} {description['chip']} {description['gpu']}-GPU {ram}/{storage} {description['color']}"
 
-                if full_desc in macbooks_pro:
-                    if price_rub < macbooks_pro[full_desc][1]:
+                    if full_desc in macbooks_pro:
+                        if price_rub < macbooks_pro[full_desc][1]:
+                            macbooks_pro[full_desc] = [price, price_rub, link]
+                    else:
                         macbooks_pro[full_desc] = [price, price_rub, link]
-                else:
-                    macbooks_pro[full_desc] = [price, price_rub, link]
         else:
             continue
-        # if full_desc in need_air_list:
-        print(full_desc)
+    
     return macbooks_pro
 
 
-da_air_m2 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+m2'
+da_air_m2 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+2022&tab=main'
 
+get_data_for_da('https://search.danawa.com/dsearch.php?query=MacBook+16+M1', headers)
 
-get_data_for_da(da_air_m2, headres=headers)
+# for k in get_data_for_da(da_air_m2, headres=headers).keys():
+#     print(k)
 
     # price_list = re.sub(r'\b\d+\s*mall\s+product\s+comparison\b', '/', translator.translate(prices).text, flags=re.IGNORECASE).split('/')
 

@@ -43,16 +43,24 @@
 #     {'product1': [1200, 12000, 'link'], 'product5':[2400, 30200, 'link'], 'product3': [111, 22222], 'product8': [6000, 722323, 'link']},
 #     {'product5': [1600, 17000, 'link'], 'product4':[4000, 322323,], 'product3': [3000, 34344, 'link'], 'product7': [4400, 342323, 'link']},
 #     ]
-def get_need_data(lst, need_list):
 
+
+def get_need_data(lst, need_list, row_count=None):
     result = {}
     c = 0
     for dictionary in lst:
+        c += 1
         for product in need_list:
             if product in dictionary:
                 pre_prices = dictionary[product]
-                if len(pre_prices) == 3:
+                
+                if len(pre_prices) == 3 and c == 2:
+                    prices = [f'=ГИПЕРССЫЛКА("{pre_prices[2]}";"{pre_prices[0]}")', f'=IF(ISFORMULA(D{row_count}); D{row_count}/$U$3; "")']
+                    row_count+=1
+
+                elif len(pre_prices) == 3:
                     prices = [f'=ГИПЕРССЫЛКА("{pre_prices[2]}";"{pre_prices[0]}")', pre_prices[1]]
+
                 else:
                     prices = pre_prices
                 if len(prices) == 2:

@@ -136,15 +136,20 @@ def format_description_air(description, flag=None) -> str:
     colors = ['starlight', 'midnight', 'silver', 'space', 'gray', 'gold']
     ru_colors = ['сияющая', 'звезда', 'полночь', 'космос', 'полночь', 'серебристый']
     new_string = re.sub(r'[^\w\s.]', '', description)
-    # print(new_string, end='\n\n')
     description = new_string.split(' ')
     memory = []
     chip = []
     color = []
 
-    gpu_search = re.findall(r'(\d+core GPU|\d+C GPU|\d+Core GPU|\d+GPU|)', new_string)[0]
-    gpu = re.sub(r'\D', '', gpu_search)
-    
+    gpu_search = re.compile(r'(\d+core GPU|\d+C GPU|\d+Core GPU|\d+GPU)')
+    gpu_cores = gpu_search.search(new_string)
+    if gpu_cores:
+        gpu_cores = gpu_cores.group(1)
+        gpu = re.sub(r'\D', '', gpu_cores)
+    else:
+        gpu_cores = "?"
+
+
     for word in description:
         if 'GB' in word or 'TB' in word:
             if flag:
@@ -188,7 +193,7 @@ def format_description_air(description, flag=None) -> str:
     return f'MacBook Air {chip[0] if len(chip) != 0 else None} {gpu}-GPU {"/".join(memory)} {color[0] if len(color) != 0 else None}'
 
 
-print(format_description_air('APPLE 2022 MacBook Air MLY03KH Anotebook Operating System OS macOS Monterey Screen Information 34.5cm 13.6 inches 2560x1664 500nit CPU Apple ARM Silicon M2 Octacore 4+4 RAM RAM Capacity 8GB RAM Replacement Impossible Graphics Builtin Graphics M2 10core storage device SSD 512GB Network Wireless LAN 802.11ax WiFi 6 Video inputoutput Webcam FHD terminal Thunderbolt 3 2 USBC combined Additional features Fingerprint recognition USBPD DP Alt Mode input device Keyboard light Ytype direction keys Power Battery 52.6Wh Adapter 35W Dual USBC port Charging port MagSafe 3 Main specifications Thickness 11.3mm Weight 1.24kg Cooling fan None fanless Color Silver 16core Neural Engine 100GB s Memory Bandwidth Media Engine Decoding + Encoding + ProRes Notch Type Display Price KRW 2090000'))
+# print(format_description_air('M1 (7-core GPU), 8GB, 256GB, Space Gray'))
 
 # for i in desc_list:
 #     print('**************************', end='\n\n')
@@ -206,3 +211,5 @@ print(format_description_air('APPLE 2022 MacBook Air MLY03KH Anotebook Operating
 "7core GPU"
 "8GPU"
 "10GPU"
+
+('MacBook Air M2 10-GPU 24/512 Silver' == 'MacBook Air M2 10-GPU 24/512 Silver')

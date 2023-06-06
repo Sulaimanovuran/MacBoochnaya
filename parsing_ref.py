@@ -4,9 +4,9 @@ import requests
 from bs4 import BeautifulSoup
 import string
 
-from format import format_description_air
+from format import format_description_air_ref as fda
 from tests import format_description_pro_ref
-from CHGPT import format_description_air as fda
+# from CHGPT import format_description_air as fda
 
 x = string.punctuation
 num = string.digits
@@ -21,6 +21,7 @@ def get_data_for_ref(url, need_list, flag):
     need_macs_count = len(need_list)
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'lxml')
+    count_ = 0
     for product in soup.find('div', role='main').select('a'):
         if flag in product.text.strip():
             card_url = "https://www.apple.com"+ product.get('href')
@@ -35,59 +36,49 @@ def get_data_for_ref(url, need_list, flag):
             if flag == 'MacBook Pro':
                 description = format_description_pro_ref(name+" "+owerview)
 
-            else:
-                description = fda(name+" "+owerview)
                 if description in need_list:
-                    print(description)
+                    macbooks[description] = [price, price_rub, card_url]
                 
-            if description in need_list:
-                macbooks[description] = [price, price_rub, card_url]
+                if len(macbooks) == len(need_list):
+                    return macbooks
 
+            else:
 
-            if len(macbooks) == len(need_list):
-                return macbooks
-            
+                description = fda(name+" "+owerview)
+
+                if description in need_list:
+                    macbooks[description] = [price, price_rub, card_url]
+                
+                if len(macbooks) == len(need_list):
+                    return macbooks
     return macbooks
         
-# get_data_for_ref(url, n)
+need_pro_list = [
+    # 'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/256 Space Gray',
+    # 'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/256 Silver',
+    # 'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/512 Space Gray',
+    # 'MacBook Pro 13 M2 (8-CPU 10-GPU) 16/512 Silver',
 
-need_air_list = [
-    'MacBook Air M2 8-GPU 8/256 Space Gray',
-    'MacBook Air M2 8-GPU 8/256 Silver',
-    'MacBook Air M2 8-GPU 8/256 Starlight',
-    'MacBook Air M2 8-GPU 8/256 Midnight',
-    'MacBook Air M2 8-GPU 16/256 Space Gray',
-    'MacBook Air M2 8-GPU 16/256 Silver',
-    'MacBook Air M2 8-GPU 16/512 Space Gray',
-    'MacBook Air M2 8-GPU 16/512 Silver',
-    'MacBook Air M2 8-GPU 24/512 Space Gray',
-    'MacBook Air M2 8-GPU 24/512 Silver',
-    'MacBook Air M2 10-GPU 24/256 Space Gray',
-    'MacBook Air M2 10-GPU 24/256 Silver',
-]
+    'MacBook Pro 14 M1 Pro (8-CPU 14-GPU) 16/512 Silver',
+    'MacBook Pro 14 M1 Pro (8-CPU 14-GPU) 16/512 Space Gray',
+    'MacBook Pro 14 M1 Pro (10-CPU 16-GPU) 16/1TB Silver',
+    'MacBook Pro 14 M1 Pro (10-CPU 16-GPU) 16/1TB Space Gray',
 
-get_data_for_ref(url, need_air_list, flag='MacBook Air')
+    'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Space Gray',
+    'MacBook Pro 14 M2 Pro (10-CPU 16-GPU) 16/512 Silver',
 
+    'MacBook Pro 16 M1 Pro (10-CPU 16-GPU) 16/512 Silver',
+    'MacBook Pro 16 M1 Pro (10-CPU 16-GPU) 16/512 Space Gray',
 
-# print(get_data_for_ref(url, need_air_list, 'Air'))
-# for k in get_data_for_ref(url, need_air_list, 'MacBook Air').items():
-#     print(k)
+    # 'MacBook Pro 14 M2 Pro (12-CPU 19-GPU) 16/1TB Space Gray',
+    # 'MacBook Pro 14 M2 Pro (12-CPU 19-GPU) 16/1TB Silver',
 
-
+    # 'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Space Gray',
+    # 'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Silver',
+    ]
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+get_data_for_ref('https://www.apple.com/shop/refurbished/mac', need_pro_list, 'MacBook Pro')
 
 
 # url = "https://www.apple.com/shop/refurbished/mac/14-inch-macbook-pro"
