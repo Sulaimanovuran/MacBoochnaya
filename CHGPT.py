@@ -213,3 +213,14 @@ def format_description_air(description, flag=None) -> str:
 "10GPU"
 
 ('MacBook Air M2 10-GPU 24/512 Silver' == 'MacBook Air M2 10-GPU 24/512 Silver')
+
+
+# a = {'helllo': 12, 'world':2, 'adam':0}
+
+# b = {'John': 'Snow', 'Sam': 'Smith', 'abc': 1}
+
+# c = {'uran': 7, 'saturn': 34}
+
+# a.update(b, c)
+# # a.update(c)
+# print(a)

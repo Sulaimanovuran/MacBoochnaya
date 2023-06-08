@@ -3,6 +3,20 @@ import requests
 import re
 import math
 
+import gspread
+
+"""Авторизация"""
+sa = gspread.service_account()
+
+"""Подключаемся к документу"""
+sh = sa.open("MacPython")
+
+"""Подключаемся к странице"""
+wks = sh.worksheet('TestData2')
+
+kgsusd = float(wks.acell('Z3').value.replace(',', '.'))
+kgsrub = float(wks.acell('Y3').value.replace(',', '.'))
+
 data = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['USD'].get('Value'),2)
 
 x = string.punctuation

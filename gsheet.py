@@ -3,6 +3,7 @@ import gspread
 from parsing_ai import get_data_for_ai, headers
 from parsing_tf import get_data_for_tf
 # from parsing_gs import pro_from_gs, air_from_gs
+from parsing_edu import pro_from_edu, air_from_edu
 from gsheet_test import get_need_data
 from parsing_da import get_data_for_da, headers as head
 from parsing_ref import get_data_for_ref
@@ -130,9 +131,9 @@ ref = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
 pro_from_ref = get_data_for_ref(ref, need_pro_list, 'MacBook Pro')
 air_from_refurb = get_data_for_ref(ref, need_air_list, 'Air')
 
-validated_pro = get_need_data([pro_from_ai, pro_from_da, pro_from_ref, pro_from_tf,], need_pro_list, row_count=3)
+validated_pro = get_need_data([pro_from_ai, pro_from_da, pro_from_ref, pro_from_tf, pro_from_edu], need_pro_list, row_count=3)
 
-validated_air = get_need_data([air_from_ai, air_from_da, air_from_refurb, air_from_tf,],need_air_list, row_count=len(validated_pro)+5)
+validated_air = get_need_data([air_from_ai, air_from_da, air_from_refurb, air_from_tf, air_from_edu ],need_air_list, row_count=len(validated_pro)+5)
 
 
 
@@ -145,12 +146,12 @@ def main():
 
     """Подключаемся к странице"""
     wks = sh.worksheet('TestData2')
-    wks.batch_clear(["A3:I101"])
+    wks.batch_clear(["A3:K101"])
 
     """Обновляем записи в указанном диапазоне"""
     coll_nums = len(validated_pro) + 2
 
-    wks.update(f'A3:I{coll_nums}', validated_pro,
+    wks.update(f'A3:K{coll_nums}', validated_pro,
                value_input_option='USER_ENTERED')
     coll_nums += 2
 
@@ -168,7 +169,7 @@ def main():
     wks.update(f'H{coll_nums}:I{coll_nums}', 'TacSafon')
 
     wks.merge_cells(f'J{coll_nums}:K{coll_nums}')
-    wks.update(f'J{coll_nums}:K{coll_nums}', 'Apple Zone')
+    wks.update(f'J{coll_nums}:K{coll_nums}', 'Apple Education')
 
     wks.update(f'A{coll_nums}', 'MacBook Air')
 
@@ -182,7 +183,7 @@ def main():
             "fontSize": 12,
             "bold": True}
     })
-    wks.update(f'A{coll_nums+1}:I{coll_nums + 1 + len(validated_air)+1}',
+    wks.update(f'A{coll_nums+1}:K{coll_nums + 1 + len(validated_air)+1}',
                validated_air, value_input_option='USER_ENTERED')
 
     # """Задаем формат"""
