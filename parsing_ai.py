@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 import re
 from format import format_description_air, format_description_pro
 from CHGPT import format_description_air as fda
-currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['USD'].get('Value'),4)
-
+from format import kgsrub, kgsusd
+from tests import format_description_mac_mini
 
 '''Определение адреса и заголовков'''
 ai_pro_16 = "https://prices.appleinsider.com/macbook-pro-16-inch-2023"
@@ -57,6 +57,7 @@ def get_data_for_ai(url, headers):
         
         if 'air' in url or 'Air' in url:
             row_desc = fda(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
+    
         else:
             pattern = r'(\d+(?:\.\d+)?)\-inch'
             match = re.search(pattern, url)
@@ -71,7 +72,7 @@ def get_data_for_ai(url, headers):
             elif numbers == '13':
                 if desc_dict['chip'] == 'M1':
                     row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} (8-CPU 8-GPU) {desc_dict["memory"]} {desc_dict["color"]}'
-                    
+
                 elif desc_dict['chip'] == 'M2':
                     row_desc = f'MacBook Pro {numbers} {desc_dict["chip"]} (8-CPU 10-GPU) {desc_dict["memory"]} {desc_dict["color"]}'
 
@@ -98,17 +99,17 @@ def get_data_for_ai(url, headers):
             best_price = row.find('td', class_=re.compile('bold')).text
             if 'place order' in best_price:
                 best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]), 2))
-                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price))* kgsusd )* kgsrub, 2)
                 all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
             else:
                 best_price = row.find('td', class_=re.compile('bold')).find('a').text
-                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * kgsusd )* kgsrub, 2)
                 all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
         except AttributeError:
             
             best_price = row.find('td', class_='item-price').text
             if best_price.startswith('$'):
-                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * currency )* 1.045, 2)
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * kgsusd )* kgsrub, 2)
                 all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
 
 
@@ -127,6 +128,68 @@ def get_data_for_ai(url, headers):
 
 
 
+
+def get_data_for_ai_mac_mini(url, headers):
+
+    html_code = requests.get(url, headers=headers)
+
+    """Создание дерева объектов"""
+
+    soup = BeautifulSoup(html_code.text, 'lxml')
+
+
+    """Выявление всех объявлений"""
+
+    all_rows_count = int(len(soup.find_all('tr', class_='item-row'))/2)
+    all_rows = soup.find_all('tr', class_='item-row')[:all_rows_count]
+    all_mms_data = {}
+
+    """Запуск цикла для каждой строки"""
+    c = 0
+    for row in all_rows:
+
+        best_price = ''
+        counter = -1
+        store = ''
+
+        """Определение цен для каждой строки, а также описание и ссылка на товар"""
+
+        all_prices = row.find_all('td', class_=re.compile('item-price'))
+        row_desc = row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', '')
+        row_desc = format_description_mac_mini(row_desc)
+        
+
+        substring = 'blue-bold'
+
+        try:
+            row_link = row.find('td', class_=lambda class_name: class_name and substring in class_name).find('a').get('href')
+        except AttributeError:
+            row_link = row.find('td', class_='item-desc').find('a').get('href')
+            
+        # row_link = row.find('td', class_='item-desc').find('a').get('href')
+        
+        """Проходимся по ценам """
+
+        try:
+            best_price = row.find('td', class_=re.compile('bold')).text
+            if 'place order' in best_price:
+                best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:]), 2))
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price))* kgsusd )* kgsrub, 2)
+                all_mms_data[row_desc] = [best_price, price_rub, row_link]
+            else:
+                best_price = row.find('td', class_=re.compile('bold')).find('a').text
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * kgsusd )* kgsrub, 2)
+                all_mms_data[row_desc] = [best_price, price_rub, row_link]
+        except AttributeError:
+            
+            best_price = row.find('td', class_='item-price').text
+            if best_price.startswith('$'):
+                price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * kgsusd )* kgsrub, 2)
+                all_mms_data[row_desc] = [best_price, price_rub, row_link]
+
+
+        
+    return all_mms_data
 
 
 

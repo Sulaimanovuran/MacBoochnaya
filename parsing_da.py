@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import re
 from googletrans import Translator
 from format_da import format_desc_air
+from tests import format_description_mac_mini
 
 currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['KRW'].get('Value'),4)
 need_air_list = [
@@ -146,9 +147,97 @@ def get_data_for_da(url, flag=None, headres=None, coll_number=None):
     return macbooks_pro
 
 
-da_air_m2 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+2022&tab=main'
 
-get_data_for_da('https://search.danawa.com/dsearch.php?query=MacBook+16+M1', headers)
+
+
+
+
+
+
+def get_data_for_da_mac_mini(url,  headres=None):
+    response = requests.get(url, headers=headers, verify=True)
+
+    # file = open('danawa.html')
+    # response = file.read()
+
+    soup = BeautifulSoup(response.text, 'lxml')
+
+    products = soup.find_all('li', class_='prod_item')
+    all_products = []
+
+    for prod_item in products:
+        try:
+            if 'mac mini' in translator.translate(prod_item.find('p', class_='prod_name').text.replace('\n', '').replace('/', ' ')).text.lower():
+                all_products.append(prod_item)
+        except:
+            continue
+    
+    macminis = {}
+
+
+    for product in all_products:
+
+        """Получение объявлений"""
+        try:
+            product_info = product.find('p', class_='prod_name').text.replace('\n', '').replace('/', ' ') + product.find('div', 'spec_list').text.replace('\n', '').replace('/', ' ')
+        except AttributeError:
+            continue
+        clean_text = re.sub(r'\s+', ' ', product_info)
+        
+        """Перевод и форматирование описания"""
+        translated_text = re.sub(r'\s+(core)',r'\1',translator.translate(clean_text).text)
+        cleaned_data = re.sub(r'[^\w\s.+]', '', translated_text)
+        description = format_description_mac_mini(cleaned_data)
+        # print(cleaned_data, end='\n\n\n')
+
+        if description:
+            """Обработка цен"""
+            price_item = product.find('div', class_='prod_pricelist').find('p', class_='price_sect')
+            # memories = product.find('div', class_='prod_pricelist').find_all('p', class_='memory_sect')
+
+            
+            test_price = price_item.find('strong').text.replace(',','')
+            # print(test_price)
+            if test_price.isdigit():
+                price = test_price
+                price_rub = round(int(price) * ((currency / 1000) * 1.045),2)
+            # try:
+            #     ram = re.findall(r'(\d+)GB', memory_item.text)[0]
+            #     storage = re.findall(r'SSD (\d+TB|\d+GB)', memory_item.text)[0].replace('GB', '')
+            # except:
+            #     ram = ''
+            #     storage = ''
+            
+            link = price_item.find('a').get('href')
+
+            # m = re.search(r"(\d+)core", memory_item.text)
+            
+
+            full_desc = description
+            
+            if full_desc in macminis:
+                if price_rub < macminis[full_desc][1]:
+                    macminis[full_desc] = [price, price_rub, link]
+            else:
+                macminis[full_desc] = [price, price_rub, link]
+
+
+        else:
+            continue
+    
+    return macminis
+
+
+
+
+
+
+
+
+
+
+
+
 
 # for k in get_data_for_da(da_air_m2, headres=headers).keys():
 #     print(k)

@@ -3,9 +3,10 @@ import json
 import requests
 from bs4 import BeautifulSoup
 import string
+from format import kgsrub, kgsusd
 
 from format import format_description_air_ref as fda
-from tests import format_description_pro_ref
+from tests import format_description_pro_ref, format_description_mac_mini
 # from CHGPT import format_description_air as fda
 
 x = string.punctuation
@@ -16,7 +17,7 @@ currency = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json
 
 url = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
 
-def get_data_for_ref(url, need_list, flag):
+def get_data_for_ref(url, flag, need_list=None):
     macbooks = {}
     need_macs_count = len(need_list)
     response = requests.get(url)
@@ -31,7 +32,7 @@ def get_data_for_ref(url, need_list, flag):
             data_dict = json.loads(f'{data.text}')
             owerview = re.sub(r'\s+', ' ',re.sub(r'[^\w\s.+]', '', soup2.find('div', class_="rc-pdsection-panel Overview-panel row").text).replace('\n', ''))
             price = int(data_dict['data']['products'][0]['price']['fullPrice'])
-            price_rub = round((price * currency)* 1.045, 2)
+            price_rub = round((price * kgsusd)* kgsrub, 2)
             name = data_dict['data']['products'][0]['name']
             if flag == 'MacBook Pro':
                 description = format_description_pro_ref(name+" "+owerview)
@@ -41,7 +42,15 @@ def get_data_for_ref(url, need_list, flag):
                 
                 if len(macbooks) == len(need_list):
                     return macbooks
+            elif flag == 'Mac mini':
 
+                description = format_description_mac_mini(name + ' ' + owerview), ' ––––––––––– ', [price, price_rub]
+                
+                if description in need_list:
+                    macbooks[description] = [price, price_rub, card_url]
+                
+                if len(macbooks) == len(need_list):
+                    return macbooks
             else:
 
                 description = fda(name+" "+owerview)
@@ -76,9 +85,6 @@ need_pro_list = [
     # 'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Space Gray',
     # 'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Silver',
     ]
-
-
-get_data_for_ref('https://www.apple.com/shop/refurbished/mac', need_pro_list, 'MacBook Pro')
 
 
 # url = "https://www.apple.com/shop/refurbished/mac/14-inch-macbook-pro"

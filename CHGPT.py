@@ -221,6 +221,36 @@ def format_description_air(description, flag=None) -> str:
 
 # c = {'uran': 7, 'saturn': 34}
 
-# a.update(b, c)
-# # a.update(c)
-# print(a)
+
+import re
+
+descriptions = [
+    "APPLE Mac mini M2 PRO Z1700003M\n\nDetailed specification\nApple (ARM) / M2 PRO / Avalanche / LPDDR5 / 16GB / SSD / 1TB / M2 16 core / Built-in speaker / 1Gbps wired / 802.11ax (Wi-Fi 6E) wireless / Bluetooth / HDMI / USB 3.0 (5Gbps) / Thunderbolt 4 / Mac OS Ventura / Mini PC / 1.28kg / Usage: Office/Lecture / Order-made product",
+    "M2 (8-core CPU, 10-core GPU), 8GB, 256GB",
+    "Apple Mac Mini MMFK3 (2023, M2, 8C CPU, 10C GPU, 8GB, 512GB SSD) Silver (серебристый)",
+    "Refurbished Mac mini 3.0GHz 6-core Intel Core i5 - Space Gray Overview Originally released October 2018 8GB of 2666MHz DDR4 SODIMM memory 512GB PCIebased SSD1 Four Thunderbolt 3 ports up to 40 Gbps Intel UHD Graphics 630 Gigabit Ethernet port"
+]
+
+memory_regex = r"(\d+)GB"
+storage_regex = r"(\d+)(GB|TB)"
+
+for description in descriptions:
+    memory_match = re.search(memory_regex, description)
+    
+    
+    if memory_match:
+        memory = memory_match.group(1)
+        print(memory)
+        description = description.replace(memory+'GB', '')
+    else: 
+        "Unknown"
+
+    storage_match = re.search(storage_regex, description)
+
+    if storage_match:
+        storage = storage_match.group(0)
+        print(storage)
+
+    else: 
+        "Unknown"
+    

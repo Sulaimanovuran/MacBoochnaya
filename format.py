@@ -316,6 +316,14 @@ def format_description_air_ref(description, flag=None) -> str:
 
     return f'MacBook Air {chip[0] if len(chip) != 0 else None} {gpu}-GPU {"/".join(memory)} {color[0] if len(color) != 0 else None}'
 
+
+
+
+
+
+
+
+
 # print(format_description_pro('M2 (12-core CPU, 30-core GPU), 32GB, 8TB, Space Gray'))
 
 '''

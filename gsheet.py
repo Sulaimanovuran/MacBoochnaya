@@ -67,8 +67,9 @@ need_air_list = [
 ]
 
 
-'''Apple Insider'''
+'''             Apple Insider           '''
 
+"""MacBooks"""
 ai_pro = 'https://prices.appleinsider.com/macbook-pro-14-inch-2023'
 ai_pro_16 = "https://prices.appleinsider.com/macbook-pro-16-inch-2021"
 # ai_pro_13 = "https://prices.appleinsider.com/macbook-pro-13-inch-2022"
@@ -84,9 +85,13 @@ air_from_ai = get_data_for_ai(ai_air, headers)
 pro_from_ai.update(pro_m1_from_ai)
 pro_from_ai.update(pro_16_from_ai)
 
+"""Mac mini"""
 
 
-'''Tacsafon'''
+
+
+
+'''             Tacsafon                '''
 
 tf_pro = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
 tf_pro_16 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-16"
@@ -102,7 +107,7 @@ pro_from_tf.update(pro_16_from_tf)
 
 
 
-'''Danawa'''
+'''             Danawa              '''
 
 da_pro = 'https://prod.danawa.com/list/?cate=11336467'
 da_pro_m1 = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+14+M1'
@@ -125,7 +130,7 @@ pro_from_da.update(pro_16_from_da)
 
 
 
-'''Apple Refurb'''
+'''             Apple Refurb                '''
 ref = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
 
 pro_from_ref = get_data_for_ref(ref, need_pro_list, 'MacBook Pro')
