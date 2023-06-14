@@ -366,7 +366,7 @@ for name, price in pro_16_3.items():
     for color in colors_pro:
         m_pro_16_3[name + ' ' + color] = [price, price_rub]
 
-############################################
+########################################################################################
 
 
 air_from_edu = {}
@@ -388,5 +388,80 @@ pro_from_edu.update(m_pro_16_2)
 pro_from_edu.update(m_pro_16_3)
 
 
+########################################################################################
 
+'''Mac mini M2 '''
+
+mac_mini_m2 = {'base': 499, 'ram_16': 180, 'ram_24': 360, 'storage_512': 200, 'storage_1TB': 380, 'storage_2TB': 740, }
+
+mini_m2 = {'Mini M2 10-GPU 8/256': 499, }
+
+for k, v in mac_mini_m2.items():
+
+    if k.startswith('ram'):
+        ram = k[-2:]
+        ram_cost = v
+
+        mini_m2[f'Mini M2 10-GPU {ram}/256'] = mac_mini_m2['base'] + ram_cost
+
+        for k, v in mac_mini_m2.items():
+            if k.startswith('storage'):
+                storage = k.split('_')[1]
+                mini_m2[f'Mini M2 10-GPU {ram}/{storage}'] = mac_mini_m2['base'] + ram_cost + v
+
+    elif k.startswith('storage'):
+        storage = k.split('_')[1]
+        mini_m2[f'Mini M2 10-GPU 8/{storage}'] = mac_mini_m2['base'] + v
+
+m_mini_m2 = {}
+for name, price in mini_m2.items():
+    price_rub = round(price * kgsusd * kgsrub, 2)
+    m_mini_m2[name] = [price, price_rub]
+    price = price + 90
+    price_rub = round(price * kgsusd * kgsrub, 2)
+    m_mini_m2[name + ' ' + '10GbE'] = [price, price_rub]
+
+
+
+
+
+
+
+
+'''Mac mini M2 Pro 16-GPU'''
+
+mac_mini_m2_pro_1 = {'base': 1199, 'ram_32': 180, 'storage_1TB': 180, 'storage_2TB': 540, 'storage_4TB': 1080, 'storage_8TB': 2160}
+
+mini_m2_pro_1 = {'Mini M2 Pro 16-GPU 16/512': 1199, }
+
+for k, v in mac_mini_m2_pro_1.items():
+
+    if k.startswith('ram'):
+        ram = k[-2:]
+        ram_cost = v
+
+        mini_m2_pro_1[f'Mini M2 Pro 16-GPU {ram}/512'] = mac_mini_m2_pro_1['base'] + ram_cost
+
+        for k, v in mac_mini_m2_pro_1.items():
+            if k.startswith('storage'):
+                storage = k.split('_')[1]
+                mini_m2_pro_1[f'Mini M2 Pro 16-GPU {ram}/{storage}'] = mac_mini_m2_pro_1['base'] + ram_cost + v
+
+    elif k.startswith('storage'):
+        storage = k.split('_')[1]
+        mini_m2_pro_1[f'Mini M2 Pro 16-GPU 16/{storage}'] = mac_mini_m2_pro_1['base'] + v
+
+m_mini_m2_pro_1 = {}
+
+
+for name, price in mini_m2_pro_1.items():
+    price_rub = round(price * kgsusd * kgsrub, 2)
+    m_mini_m2_pro_1[name] = [price, price_rub]
+    price = price + 90
+    price_rub = round(price * kgsusd * kgsrub, 2)
+    m_mini_m2_pro_1[name + ' ' + '10GbE'] = [price, price_rub]
+
+
+for k, v in m_mini_m2_pro_1.items():
+    print(k, '   ', v)
 
