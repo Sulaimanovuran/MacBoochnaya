@@ -517,6 +517,7 @@ def format_description_mac_mini(description):
 
     if storage_match:
         storage = storage_match.group(0)
+        storage = storage.replace('GB', '')
 
     else: 
         storage  = "Unknown"

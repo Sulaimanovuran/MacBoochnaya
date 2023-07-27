@@ -46,7 +46,7 @@ def get_data_for_tf(url):
 
 
 
-def get_data_for_tf(url):
+def get_data_for_tf_mini(url):
     
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')

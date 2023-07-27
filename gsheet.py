@@ -1,11 +1,11 @@
 import time
 import gspread
-from parsing_ai import get_data_for_ai, headers
-from parsing_tf import get_data_for_tf
+from parsing_ai import get_data_for_ai, headers, get_data_for_ai_mac_mini
+from parsing_tf import get_data_for_tf, get_data_for_tf_mini
 # from parsing_gs import pro_from_gs, air_from_gs
-from parsing_edu import pro_from_edu, air_from_edu
+from parsing_edu import pro_from_edu, air_from_edu, mini_from_edu
 from gsheet_test import get_need_data
-from parsing_da import get_data_for_da, headers as head
+from parsing_da import get_data_for_da, headers as head, get_data_for_da_mac_mini
 from parsing_ref import get_data_for_ref
 # from format import get_need_models, func
 
@@ -67,6 +67,20 @@ need_air_list = [
 ]
 
 
+need_mini_list = [
+    'Mini M1 8-GPU 8/256',
+    'Mini M1 8-GPU 16/512',
+    'Mini M2 10-GPU 8/256',
+    'Mini M2 10-GPU 16/256',
+    'Mini M2 10-GPU 24/256',
+    'Mini M2 10-GPU 16/512',
+    'Mini M2 Pro 16-GPU 8/256',
+    'Mini M2 Pro 16-GPU 16/512',
+]
+
+
+
+
 '''             Apple Insider           '''
 
 """MacBooks"""
@@ -87,12 +101,16 @@ pro_from_ai.update(pro_16_from_ai)
 
 """Mac mini"""
 
+mini_m1_ai = 'https://prices.appleinsider.com/mac-mini-late-2020'
+mini_m2_ai = 'https://prices.appleinsider.com/mac-mini-2023'
 
-
+mini_from_ai = get_data_for_ai_mac_mini(mini_m1_ai, headers=headers)
+mini_from_ai.update(get_data_for_ai_mac_mini(mini_m2_ai, headers=headers))
 
 
 '''             Tacsafon                '''
 
+"""MacBooks"""
 tf_pro = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-14"
 tf_pro_16 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-16"
 # tf_pro_13 = "https://tacsafon.ru/magazin/folder/apple-macbook-pro-13"
@@ -105,10 +123,15 @@ air_from_tf = get_data_for_tf(tf_air)
 
 pro_from_tf.update(pro_16_from_tf)
 
+"""Mac mini"""
 
+mini_tf = 'https://tacsafon.ru/magazin/folder/apple-mac-mini'
+
+mini_from_tf = get_data_for_tf_mini(mini_tf)
 
 '''             Danawa              '''
 
+"""MacBooks"""
 da_pro = 'https://prod.danawa.com/list/?cate=11336467'
 da_pro_m1 = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+14+M1'
 da_pro_16 = 'https://search.danawa.com/dsearch.php?k1=Macbook+pro+16+M1'
@@ -127,20 +150,32 @@ air_from_da.update(air_from_da_2)
 pro_from_da.update(pro_m1_from_da)
 pro_from_da.update(pro_16_from_da)
 
+"""Mac mini"""
+
+mini_da = 'https://search.danawa.com/dsearch.php?k1=macmini&module=goods&act=dispMain'
+
+mini_from_da = get_data_for_da_mac_mini(mini_da, head)
 
 
 
 '''             Apple Refurb                '''
+
+"""MacBooks"""
 ref = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
 
-pro_from_ref = get_data_for_ref(ref, need_pro_list, 'MacBook Pro')
-air_from_refurb = get_data_for_ref(ref, need_air_list, 'Air')
+pro_from_ref = get_data_for_ref(ref, 'MacBook Pro', need_pro_list)
+air_from_refurb = get_data_for_ref(ref, 'Air', need_air_list)
+
+"""MacMini"""
+
+mini_from_ref = get_data_for_ref(ref, 'Mac mini', need_mini_list)
+
 
 validated_pro = get_need_data([pro_from_ai, pro_from_da, pro_from_ref, pro_from_tf, pro_from_edu], need_pro_list, row_count=3)
 
-validated_air = get_need_data([air_from_ai, air_from_da, air_from_refurb, air_from_tf, air_from_edu ],need_air_list, row_count=len(validated_pro)+5)
+validated_air = get_need_data([air_from_ai, air_from_da, air_from_refurb, air_from_tf, air_from_edu ], need_air_list, row_count=len(validated_pro)+5)
 
-
+validated_mini = get_need_data([mini_from_ai, mini_from_da, mini_from_ref, mini_from_tf, mini_from_edu], need_mini_list, row_count=len(validated_air)+len(validated_pro)+7)
 
 def main():
     """Авторизация"""
@@ -178,7 +213,7 @@ def main():
 
     wks.update(f'A{coll_nums}', 'MacBook Air')
 
-    wks.format(f'A{coll_nums}:I{coll_nums}', {
+    wks.format(f'A{coll_nums}:K{coll_nums}', {
         "backgroundColor": {
             "red": 50,
             "green": 50,
@@ -190,6 +225,39 @@ def main():
     })
     wks.update(f'A{coll_nums+1}:K{coll_nums + 1 + len(validated_air)+1}',
                validated_air, value_input_option='USER_ENTERED')
+    
+    coll_nums += 1 + len(validated_air)+1
+
+    wks.merge_cells(f'B{coll_nums}:C{coll_nums}')
+    wks.update(f'B{coll_nums}:C{coll_nums}', 'Apple Insider')
+
+    wks.merge_cells(f'D{coll_nums}:E{coll_nums}')
+    wks.update(f'D{coll_nums}:E{coll_nums}', 'Danawa')
+
+    wks.merge_cells(f'F{coll_nums}:G{coll_nums}')
+    wks.update(f'F{coll_nums}:G{coll_nums}', 'Apple Refurbished')
+
+    wks.merge_cells(f'H{coll_nums}:I{coll_nums}')
+    wks.update(f'H{coll_nums}:I{coll_nums}', 'TacSafon')
+
+    wks.merge_cells(f'J{coll_nums}:K{coll_nums}')
+    wks.update(f'J{coll_nums}:K{coll_nums}', 'Apple Education')
+
+    wks.update(f'A{coll_nums}', 'Mac mini')
+
+    wks.format(f'A{coll_nums}:K{coll_nums}', {
+        "backgroundColor": {
+            "red": 50,
+            "green": 50,
+            "blue": 50
+        },
+        "textFormat": {
+            "fontSize": 12,
+            "bold": True}
+    })
+
+    wks.update(f'A{coll_nums+1}:K{coll_nums + 1 + len(validated_mini)+1}',
+               validated_mini, value_input_option='USER_ENTERED')
 
     # """Задаем формат"""
     # wks.format(f"A3:A{len(validated_pro)}", {

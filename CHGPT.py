@@ -231,26 +231,26 @@ descriptions = [
     "Refurbished Mac mini 3.0GHz 6-core Intel Core i5 - Space Gray Overview Originally released October 2018 8GB of 2666MHz DDR4 SODIMM memory 512GB PCIebased SSD1 Four Thunderbolt 3 ports up to 40 Gbps Intel UHD Graphics 630 Gigabit Ethernet port"
 ]
 
-memory_regex = r"(\d+)GB"
-storage_regex = r"(\d+)(GB|TB)"
+# memory_regex = r"(\d+)GB"
+# storage_regex = r"(\d+)(GB|TB)"
 
-for description in descriptions:
-    memory_match = re.search(memory_regex, description)
+# for description in descriptions:
+#     memory_match = re.search(memory_regex, description)
     
     
-    if memory_match:
-        memory = memory_match.group(1)
-        print(memory)
-        description = description.replace(memory+'GB', '')
-    else: 
-        "Unknown"
+#     if memory_match:
+#         memory = memory_match.group(1)
+#         print(memory)
+#         description = description.replace(memory+'GB', '')
+#     else: 
+#         "Unknown"
 
-    storage_match = re.search(storage_regex, description)
+#     storage_match = re.search(storage_regex, description)
 
-    if storage_match:
-        storage = storage_match.group(0)
-        print(storage)
+#     if storage_match:
+#         storage = storage_match.group(0)
+#         print(storage)
 
-    else: 
-        "Unknown"
+#     else: 
+#         "Unknown"
     

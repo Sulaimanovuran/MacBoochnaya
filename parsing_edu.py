@@ -390,7 +390,7 @@ pro_from_edu.update(m_pro_16_3)
 
 ########################################################################################
 
-'''Mac mini M2 '''
+'''Mac mini M2 #######done'''
 
 mac_mini_m2 = {'base': 499, 'ram_16': 180, 'ram_24': 360, 'storage_512': 200, 'storage_1TB': 380, 'storage_2TB': 740, }
 
@@ -428,9 +428,9 @@ for name, price in mini_m2.items():
 
 
 
-'''Mac mini M2 Pro 16-GPU'''
+'''Mac mini M2 Pro 16-GPU #######done'''
 
-mac_mini_m2_pro_1 = {'base': 1199, 'ram_32': 180, 'storage_1TB': 180, 'storage_2TB': 540, 'storage_4TB': 1080, 'storage_8TB': 2160}
+mac_mini_m2_pro_1 = {'base': 1199, 'ram_32': 360, 'storage_1TB': 180, 'storage_2TB': 540, 'storage_4TB': 1080, 'storage_8TB': 2160}
 
 mini_m2_pro_1 = {'Mini M2 Pro 16-GPU 16/512': 1199, }
 
@@ -462,6 +462,49 @@ for name, price in mini_m2_pro_1.items():
     m_mini_m2_pro_1[name + ' ' + '10GbE'] = [price, price_rub]
 
 
-for k, v in m_mini_m2_pro_1.items():
-    print(k, '   ', v)
 
+'''Mac mini M2 Pro 19-GPU #######done'''
+
+mac_mini_m2_pro_2 = {'base': 1469, 'ram_32': 360, 'storage_1TB': 180, 'storage_2TB': 540, 'storage_4TB': 1080, 'storage_8TB': 2160}
+
+mini_m2_pro_2 = {'Mini M2 Pro 19-GPU 16/512': 1469, }
+
+for k, v in mac_mini_m2_pro_2.items():
+
+    if k.startswith('ram'):
+        ram = k[-2:]
+        ram_cost = v
+
+        mini_m2_pro_2[f'Mini M2 Pro 19-GPU {ram}/512'] = mac_mini_m2_pro_2['base'] + ram_cost
+
+        for k, v in mac_mini_m2_pro_2.items():
+            if k.startswith('storage'):
+                storage = k.split('_')[1]
+                mini_m2_pro_2[f'Mini M2 Pro 19-GPU {ram}/{storage}'] = mac_mini_m2_pro_2['base'] + ram_cost + v
+
+    elif k.startswith('storage'):
+        storage = k.split('_')[1]
+        mini_m2_pro_2[f'Mini M2 Pro 19-GPU 16/{storage}'] = mac_mini_m2_pro_2['base'] + v
+
+m_mini_m2_pro_2 = {}
+
+
+for name, price in mini_m2_pro_2.items():
+    price_rub = round(price * kgsusd * kgsrub, 2)
+    m_mini_m2_pro_2[name] = [price, price_rub]
+    price = price + 90
+    price_rub = round(price * kgsusd * kgsrub, 2)
+    m_mini_m2_pro_2[name + ' ' + '10GbE'] = [price, price_rub]
+
+
+###############################################################################################
+
+
+mini_from_edu = {}
+
+mini_from_edu.update(m_mini_m2)
+mini_from_edu.update(m_mini_m2_pro_1)
+mini_from_edu.update(m_mini_m2_pro_2)
+
+
+###############################################################################################

@@ -192,7 +192,8 @@ def get_data_for_ai_mac_mini(url, headers):
     return all_mms_data
 
 
-
+for k in get_data_for_ai_mac_mini('https://prices.appleinsider.com/mac-mini-2023', headers).keys():
+    print(k)
 
 
 

@@ -19,10 +19,8 @@ url = "https://www.apple.com/shop/refurbished/mac/13-inch-macbook-air"
 
 def get_data_for_ref(url, flag, need_list=None):
     macbooks = {}
-    need_macs_count = len(need_list)
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'lxml')
-    count_ = 0
     for product in soup.find('div', role='main').select('a'):
         if flag in product.text.strip():
             card_url = "https://www.apple.com"+ product.get('href')
@@ -85,6 +83,20 @@ need_pro_list = [
     # 'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Space Gray',
     # 'MacBook Pro 14 M2 Max (12-CPU 30-GPU) 32/1TB Silver',
     ]
+
+
+
+# for k in get_data_for_ref(url, need_pro_list, 'MacBook Pro').keys():
+#     print(k)
+
+
+
+
+
+
+
+
+
 
 
 # url = "https://www.apple.com/shop/refurbished/mac/14-inch-macbook-pro"
