@@ -56,7 +56,17 @@ def get_data_for_ai(url, headers):
         # row_desc = row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', '')
         
         if 'air' in url or 'Air' in url:
-            row_desc = fda(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
+            pattern = r'(\d+(?:\.\d+)?)\-inch'
+            match = re.search(pattern, url)
+            if match:
+                numbers = match.group(1)
+            else:
+                numbers = None
+            
+            if numbers == '15':
+                row_desc = fda(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''), resolution=numbers)
+            else:
+                row_desc = fda(row.find('td', class_='item-desc').text.replace('\n', ' ').replace('\t', ''))
     
         else:
             pattern = r'(\d+(?:\.\d+)?)\-inch'
@@ -192,13 +202,10 @@ def get_data_for_ai_mac_mini(url, headers):
     return all_mms_data
 
 
-for k in get_data_for_ai_mac_mini('https://prices.appleinsider.com/mac-mini-2023', headers).keys():
-    print(k)
 
 
-
-
-
+for k,v in get_data_for_ai('https://prices.appleinsider.com/macbook-air-2022', headers=headers).items():
+    print(k, '-----------', v[0], end='\n\n')
 
 
 

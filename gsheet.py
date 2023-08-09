@@ -170,12 +170,16 @@ air_from_refurb = get_data_for_ref(ref, 'Air', need_air_list)
 
 mini_from_ref = get_data_for_ref(ref, 'Mac mini', need_mini_list)
 
+"""Фильтрация по нужным моделям из списка"""
 
 validated_pro = get_need_data([pro_from_ai, pro_from_da, pro_from_ref, pro_from_tf, pro_from_edu], need_pro_list, row_count=3)
 
 validated_air = get_need_data([air_from_ai, air_from_da, air_from_refurb, air_from_tf, air_from_edu ], need_air_list, row_count=len(validated_pro)+5)
 
 validated_mini = get_need_data([mini_from_ai, mini_from_da, mini_from_ref, mini_from_tf, mini_from_edu], need_mini_list, row_count=len(validated_air)+len(validated_pro)+7)
+
+
+"""Запись в Google Sheets"""
 
 def main():
     """Авторизация"""

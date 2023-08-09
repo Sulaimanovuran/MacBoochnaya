@@ -135,7 +135,9 @@ def get_data_for_da(url, flag=None, headres=None, coll_number=None):
 
                 else:
                     full_desc = f"MacBook {description['m_version']} {description['chip']} {description['gpu']}-GPU {ram}/{storage} {description['color']}"
-
+                    if int(description['resolution']) == 15:
+                        full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['gpu']}-GPU {ram}/{storage} {description['color']}"
+                        print(full_desc)
                     if full_desc in macbooks_pro:
                         if price_rub < macbooks_pro[full_desc][1]:
                             macbooks_pro[full_desc] = [price, price_rub, link]
@@ -149,8 +151,7 @@ def get_data_for_da(url, flag=None, headres=None, coll_number=None):
 
 
 
-
-
+get_data_for_da('https://prod.danawa.com/list/?cate=11336468', headres=headers)
 
 
 

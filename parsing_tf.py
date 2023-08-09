@@ -25,14 +25,18 @@ def get_data_for_tf(url):
             if resolution == '13':
                 m1 = '(8-CPU 8-GPU)'
                 m2 = '(8-CPU 10-GPU)'
+                
                 name_arr.append(f'MacBook Pro {resolution} {description["chip"]} {m1 if description["chip"] == "M1" else m2} {description["memory"]} {description["color"]}')
                 
             else:
                 name_arr.append(f'MacBook Pro {resolution} {description["chip"]} {description["chip_version"]} {description["cgpu"]} {description["memory"]} {description["color"]}')
         else:
-            name_arr.append(func_for_formatting(name))
+            if '15.3' in name:
+                name_arr.append(func_for_formatting(name, resolution=15))
+            else:
+                name_arr.append(func_for_formatting(name))
         # name_arr.append(name)
-
+    
     for product1, product2 in zip(soup.find_all('div', {'class': 'product-price'}), soup.find_all('div', class_='product-top')):
         price = product1.find('div', {'class':'price-current'}).text.strip()
         link = 'https://tacsafon.ru'+product2.find('div', class_='product-name').find('a').get('href')
@@ -69,3 +73,8 @@ def get_data_for_tf_mini(url):
     all_mms_data = {name: price for name, price in zip(name_arr, price_arr)}
 
     return all_mms_data
+
+
+
+
+get_data_for_tf("https://tacsafon.ru/magazin/folder/apple-macbook-air")

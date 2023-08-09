@@ -130,7 +130,7 @@ desc_list = [
 ]
 import re
 
-def format_description_air(description, flag=None) -> str:
+def format_description_air(description, flag=None, resolution=None) -> str:
     if flag and description.count('GB') > 1 or description.count('TB') > 0:
         flag = None
     colors = ['starlight', 'midnight', 'silver', 'space', 'gray', 'gold']
@@ -141,7 +141,7 @@ def format_description_air(description, flag=None) -> str:
     chip = []
     color = []
 
-    gpu_search = re.compile(r'(\d+core GPU|\d+C GPU|\d+Core GPU|\d+GPU)')
+    gpu_search = re.compile(r'(\d+core GPU|\d+C GPU|\d+Core GPU|\d+GPU|\d+core)')
     gpu_cores = gpu_search.search(new_string)
     if gpu_cores:
         gpu_cores = gpu_cores.group(1)
@@ -189,8 +189,12 @@ def format_description_air(description, flag=None) -> str:
             else:
                 color.append(word) if len(color) == 0 else ...
 
-
-    return f'MacBook Air {chip[0] if len(chip) != 0 else None} {gpu}-GPU {"/".join(memory)} {color[0] if len(color) != 0 else None}'
+    if resolution:
+        finall_description = f'MacBook Air {resolution} {chip[0] if len(chip) != 0 else None} {gpu}-GPU {"/".join(memory)} {color[0] if len(color) != 0 else None}'
+    else:
+        finall_description = f'MacBook Air {chip[0] if len(chip) != 0 else None} {gpu}-GPU {"/".join(memory)} {color[0] if len(color) != 0 else None}'
+    # print(finall_description)
+    return finall_description
 
 
 # print(format_description_air('M1 (7-core GPU), 8GB, 256GB, Space Gray'))
@@ -212,7 +216,7 @@ def format_description_air(description, flag=None) -> str:
 "8GPU"
 "10GPU"
 
-('MacBook Air M2 10-GPU 24/512 Silver' == 'MacBook Air M2 10-GPU 24/512 Silver')
+('Apple MacBook Air 13" Late 2020 MGN93RU/A (M1  8GB  256GB SSD  Apple graphics 7-core) серебристый')
 
 
 # a = {'helllo': 12, 'world':2, 'adam':0}

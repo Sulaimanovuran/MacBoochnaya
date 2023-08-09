@@ -94,7 +94,46 @@ for name, price in airs_m2.items():
         m_air_m2[name + ' ' + color] = [price, price_rub]
 
 
+'''MacBook Air 15 M2 '''
 
+macbook_air_15 = {'base': 1199, 'GPU_10':100, 'ram_16':180, 'ram_24': 360, 'storage_512':200, 'storage_1TB':380, 'storage_2TB':740}
+
+
+airs_15 = {'MacBook Air 15 M2 10-GPU 8/256': 1199}
+
+for k, v in macbook_air_15.items():
+    
+
+    if k.startswith('ram'):
+
+        for k,v in macbook_air_15.items():
+            if k.startswith('ram'):
+                ram = k[-2:]
+                ram_cost = v
+                airs_15[f'MacBook Air 15 M2 10-GPU {ram}/256'] = macbook_air_15['base'] + ram_cost
+
+                for k, v in macbook_air_15.items():
+                    if k.startswith('storage'):
+                        storage = k.split('_')[1]
+                        airs_15[f'MacBook Air 15 M2 10-GPU {ram}/{storage}'] = macbook_air_15['base'] + ram_cost + v
+
+        
+    elif k.startswith('storage'):
+
+        for k,v in macbook_air_15.items():
+            if k.startswith('storage'):
+                storage = k.split('_')[1]
+                airs_15[f'MacBook Air 15 M2 10-GPU 8/{storage}'] = macbook_air_15['base'] + v
+
+
+m_air_15 = {}
+for name, price in airs_15.items():
+    price_rub = round(price * kgsusd * kgsrub, 2)
+    for color in colors_air_m2:
+        m_air_15[name + ' ' + color] = [price, price_rub]
+
+for k,v in m_air_15.items():
+    print(k, '         ', v)
 ############################################
 colors_pro = ['Silver', 'Space Gray']
 
