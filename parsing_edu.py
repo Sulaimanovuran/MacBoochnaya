@@ -1,4 +1,4 @@
-from format import kgsrub, kgsusd
+from format import rubkgs, kgsusd
 
 '''MacBook Air M1 #######done'''
 
@@ -29,7 +29,7 @@ for k,v in macbook_air_m1.items():
 
 m_air_m1 = {}
 for name, price in airs_m1.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_air_m1:
         m_air_m1[name + ' ' + color] = [price, price_rub]
 
@@ -89,7 +89,7 @@ for k, v in macbook_air_m2.items():
 
 m_air_m2 = {}
 for name, price in airs_m2.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_air_m2:
         m_air_m2[name + ' ' + color] = [price, price_rub]
 
@@ -128,12 +128,10 @@ for k, v in macbook_air_15.items():
 
 m_air_15 = {}
 for name, price in airs_15.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_air_m2:
         m_air_15[name + ' ' + color] = [price, price_rub]
 
-for k,v in m_air_15.items():
-    print(k, '         ', v)
 ############################################
 colors_pro = ['Silver', 'Space Gray']
 
@@ -165,7 +163,7 @@ for k, v in macbook_pro_13_m2.items():
 
 m_pro_13 = {}
 for name, price in pro_13.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_13[name + ' ' + color] = [price, price_rub]
 
@@ -200,7 +198,7 @@ for k, v in macbook_pro_14_m2_pro_1.items():
 
 m_pro_14_1 = {}
 for name, price in pro_14_1.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_14_1[name + ' ' + color] = [price, price_rub]
 
@@ -234,7 +232,7 @@ for k, v in macbook_pro_14_m2_pro_2.items():
 
 m_pro_14_2 = {}
 for name, price in pro_14_2.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_14_2[name + ' ' + color] = [price, price_rub]
 
@@ -268,7 +266,7 @@ for k, v in macbook_pro_14_m2_max_1.items():
 
 m_pro_14_3 = {}
 for name, price in pro_14_3.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_14_3[name + ' ' + color] = [price, price_rub]
 
@@ -301,7 +299,7 @@ for k, v in macbook_pro_14_m2_max_2.items():
 
 m_pro_14_4 = {}
 for name, price in pro_14_4.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_14_4[name + ' ' + color] = [price, price_rub]
 
@@ -336,7 +334,7 @@ for k, v in macbook_pro_16_m2_pro_1.items():
 
 m_pro_16_1 = {}
 for name, price in pro_16_1.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_16_1[name + ' ' + color] = [price, price_rub]
 
@@ -369,7 +367,7 @@ for k, v in macbook_pro_16_m2_pro_2.items():
 
 m_pro_16_2 = {}
 for name, price in pro_16_2.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_16_2[name + ' ' + color] = [price, price_rub]
 
@@ -401,7 +399,7 @@ for k, v in macbook_pro_16_m2_max_1.items():
 
 m_pro_16_3 = {}
 for name, price in pro_16_3.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     for color in colors_pro:
         m_pro_16_3[name + ' ' + color] = [price, price_rub]
 
@@ -454,10 +452,10 @@ for k, v in mac_mini_m2.items():
 
 m_mini_m2 = {}
 for name, price in mini_m2.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     m_mini_m2[name] = [price, price_rub]
     price = price + 90
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     m_mini_m2[name + ' ' + '10GbE'] = [price, price_rub]
 
 
@@ -494,10 +492,10 @@ m_mini_m2_pro_1 = {}
 
 
 for name, price in mini_m2_pro_1.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     m_mini_m2_pro_1[name] = [price, price_rub]
     price = price + 90
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     m_mini_m2_pro_1[name + ' ' + '10GbE'] = [price, price_rub]
 
 
@@ -529,10 +527,10 @@ m_mini_m2_pro_2 = {}
 
 
 for name, price in mini_m2_pro_2.items():
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     m_mini_m2_pro_2[name] = [price, price_rub]
     price = price + 90
-    price_rub = round(price * kgsusd * kgsrub, 2)
+    price_rub = round(price * kgsusd * rubkgs, 2)
     m_mini_m2_pro_2[name + ' ' + '10GbE'] = [price, price_rub]
 
 

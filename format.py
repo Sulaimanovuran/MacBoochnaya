@@ -15,7 +15,8 @@ sh = sa.open("MacPython")
 wks = sh.worksheet('TestData2')
 
 kgsusd = float(wks.acell('Z3').value.replace(',', '.'))
-kgsrub = float(wks.acell('Y3').value.replace(',', '.'))
+rubkgs = float(wks.acell('V3').value.replace(',', '.'))
+krwusd = float(wks.acell('X3').value.replace(',', '.'))
 
 data = round(requests.get('https://www.cbr-xml-daily.ru/daily_json.js').json()['Valute']['USD'].get('Value'),2)
 

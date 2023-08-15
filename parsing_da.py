@@ -66,7 +66,6 @@ def get_data_for_da(url, flag=None, headres=None, coll_number=None):
         cleaned_data = re.sub(r'[^\w\s.+]', '', clean_text2)
 
         description = format_desc_air(cleaned_data)
-        # print(cleaned_data, end='\n\n\n')
 
         if description:
             """Обработка цен"""
@@ -75,7 +74,6 @@ def get_data_for_da(url, flag=None, headres=None, coll_number=None):
 
             for price_item, memory_item in zip(prices, memories):
                 test_price = price_item.find('strong').text.replace(',','')
-                # print(test_price)
                 if test_price.isdigit():
                     price = test_price
                     price_rub = round(int(price) * ((currency / 1000) * 1.045),2)
@@ -137,7 +135,7 @@ def get_data_for_da(url, flag=None, headres=None, coll_number=None):
                     full_desc = f"MacBook {description['m_version']} {description['chip']} {description['gpu']}-GPU {ram}/{storage} {description['color']}"
                     if int(description['resolution']) == 15:
                         full_desc = f"MacBook {description['m_version']} {description['resolution']} {description['chip']} {description['gpu']}-GPU {ram}/{storage} {description['color']}"
-                        print(full_desc)
+                        
                     if full_desc in macbooks_pro:
                         if price_rub < macbooks_pro[full_desc][1]:
                             macbooks_pro[full_desc] = [price, price_rub, link]
@@ -149,9 +147,6 @@ def get_data_for_da(url, flag=None, headres=None, coll_number=None):
     return macbooks_pro
 
 
-
-
-get_data_for_da('https://prod.danawa.com/list/?cate=11336468', headres=headers)
 
 
 

@@ -3,7 +3,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 import string
-from format import kgsrub, kgsusd
+from format import rubkgs, kgsusd
 
 from format import format_description_air_ref as fda
 from tests import format_description_pro_ref, format_description_mac_mini
@@ -30,7 +30,7 @@ def get_data_for_ref(url, flag, need_list=None):
             data_dict = json.loads(f'{data.text}')
             owerview = re.sub(r'\s+', ' ',re.sub(r'[^\w\s.+]', '', soup2.find('div', class_="rc-pdsection-panel Overview-panel row").text).replace('\n', ''))
             price = int(data_dict['data']['products'][0]['price']['fullPrice'])
-            price_rub = round((price * kgsusd)* kgsrub, 2)
+            price_rub = round((price * kgsusd)* rubkgs, 2)
             name = data_dict['data']['products'][0]['name']
             if flag == 'MacBook Pro':
                 description = format_description_pro_ref(name+" "+owerview)
@@ -86,7 +86,7 @@ need_pro_list = [
 
 
 
-# for k in get_data_for_ref(url, need_pro_list, 'MacBook Pro').keys():
+# for k in get_data_for_ref(url, flag='MacBook Pro', need_list=need_pro_list).keys():
 #     print(k)
 
 
