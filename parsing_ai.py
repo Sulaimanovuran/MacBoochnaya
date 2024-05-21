@@ -108,19 +108,19 @@ def get_data_for_ai(url, headers):
         try:
             best_price = row.find('td', class_=re.compile('bold')).text
             if 'place order' in best_price:
-                best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:].replace(',','')), 2)) + " НЗ"
+                best_price = '$' + str(round(float(all_prices[0].text[1:].replace(',','')) - float(row.find('td', class_='item-discount').text[1:].replace(',','')), 2))
                 price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price))* kgsusd )* rubkgs, 2)
-                all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+                all_MBs_data_AI[row_desc] = [best_price + " НЗ", price_rub, row_link]
             else:
                 best_price = row.find('td', class_=re.compile('bold')).find('a').text
                 price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * kgsusd )* rubkgs, 2)
                 all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
 
         except AttributeError:
-            best_price = row.find('td', class_='item-price').text + " НС"
+            best_price = row.find('td', class_='item-price').text
             if best_price.startswith('$'):
                 price_rub = round((float(re.sub(r"[^\w\s\.]", "", best_price)) * kgsusd )* rubkgs, 2)
-                all_MBs_data_AI[row_desc] = [best_price, price_rub, row_link]
+                all_MBs_data_AI[row_desc] = [best_price  + " НС", price_rub, row_link]
 
     return all_MBs_data_AI
 

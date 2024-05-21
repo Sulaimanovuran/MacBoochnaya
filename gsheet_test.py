@@ -10,8 +10,8 @@ def get_need_data(lst, need_list, row_count=None):
                 row_count+=1
                 pre_prices = dictionary[product]
                 
-                if len(pre_prices) == 3 and c == 2:
-                    won_to_usd = round(float(int(pre_prices[0])*krwusd), 2)
+                if len(pre_prices) == 3 and c == 3:
+                    won_to_usd = round(float(pre_prices[0][1:])*krwusd, 2)
                     prices = [f'=ГИПЕРССЫЛКА("{pre_prices[2]}";"${won_to_usd}")']
                     
                 elif len(pre_prices) == 3:
@@ -31,9 +31,9 @@ def get_need_data(lst, need_list, row_count=None):
 
 
 def header_row_writer(wks, coll_num, product_name):
-    wks.update(f'B{coll_num}', 'Apple Insider')
-    wks.update(f'C{coll_num}', 'Danawa')
-    wks.update(f'D{coll_num}', 'Apple Refurbished')
+    wks.update(f'B{coll_num}', 'Apple Refurbished')
+    wks.update(f'C{coll_num}', 'Apple Insider')
+    wks.update(f'D{coll_num}', 'Danawa')
     wks.update(f'E{coll_num}', 'TacSafon')
     wks.update(f'F{coll_num}', 'Apple Education')
     wks.update(f'A{coll_num}', product_name)

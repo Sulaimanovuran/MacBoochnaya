@@ -29,8 +29,9 @@ def get_data_for_ref(url, flag, need_list=None):
             data = soup2.find('script', {'type':'application/json', 'id':'metrics'})
             data_dict = json.loads(f'{data.text}')
             owerview = re.sub(r'\s+', ' ',re.sub(r'[^\w\s.+]', '', soup2.find('div', class_="rc-pdsection-panel Overview-panel row").text).replace('\n', ''))
-            price = int(data_dict['data']['products'][0]['price']['fullPrice'])
-            price_rub = round((price * kgsusd)* rubkgs, 2)
+            price_before = round(float(data_dict['data']['products'][0]['price']['fullPrice']),2)
+            price = '$'+str(price_before)
+            price_rub = round((price_before * kgsusd)* rubkgs, 2)
             name = data_dict['data']['products'][0]['name']
             if flag == 'MacBook Pro':
                 description = format_description_pro_ref(name+" "+owerview)

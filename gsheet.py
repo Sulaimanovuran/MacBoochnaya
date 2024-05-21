@@ -5,7 +5,7 @@ from parsing_tf import get_data_for_tf, get_data_for_tf_mini
 # from parsing_gs import pro_from_gs, air_from_gs
 from parsing_edu import pro_from_edu, air_from_edu, mini_from_edu
 from gsheet_test import get_need_data, header_row_writer
-from parsing_da import get_data_for_da, headers as head, get_data_for_da_mac_mini
+# from parsing_da import get_data_for_da, headers as head, get_data_for_da_mac_mini
 from parsing_ref import get_data_for_ref
 
 
@@ -114,30 +114,30 @@ mini_from_tf = get_data_for_tf_mini(mini_tf)
 
 '''             Danawa              '''
 
-"""MacBooks"""
-da_pro = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+14+M2'
-da_pro_m1 = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+14+M1'
-da_pro_16 = 'https://search.danawa.com/dsearch.php?k1=Macbook+pro+16+M1'
-# da_pro_13 = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+13+m2'
-da_air_m1 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+m1'
-da_air_m2 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+2022'
+# """MacBooks"""
+# da_pro = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+14+M2'
+# da_pro_m1 = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+14+M1'
+# da_pro_16 = 'https://search.danawa.com/dsearch.php?k1=Macbook+pro+16+M1'
+# # da_pro_13 = 'https://search.danawa.com/dsearch.php?query=Macbook+pro+13+m2'
+# da_air_m1 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+m1'
+# da_air_m2 = 'https://search.danawa.com/dsearch.php?query=MacBook+Air+2022'
 
-pro_from_da = get_data_for_da(da_pro, headres=head)
-pro_m1_from_da = get_data_for_da(da_pro_m1, headres=head)
-pro_16_from_da = get_data_for_da(da_pro_16, headres=head)
-# pro_13_from_da = get_data_for_da(da_pro_13, headres=head)
-air_from_da = get_data_for_da(da_air_m1, headres=head)
-air_from_da_2 = get_data_for_da(da_air_m2, headres=head)
+# pro_from_da = get_data_for_da(da_pro, headres=head)
+# pro_m1_from_da = get_data_for_da(da_pro_m1, headres=head)
+# pro_16_from_da = get_data_for_da(da_pro_16, headres=head)
+# # pro_13_from_da = get_data_for_da(da_pro_13, headres=head)
+# air_from_da = get_data_for_da(da_air_m1, headres=head)
+# air_from_da_2 = get_data_for_da(da_air_m2, headres=head)
 
-air_from_da.update(air_from_da_2)
-pro_from_da.update(pro_m1_from_da)
-pro_from_da.update(pro_16_from_da)
+# air_from_da.update(air_from_da_2)
+# pro_from_da.update(pro_m1_from_da)
+# pro_from_da.update(pro_16_from_da)
 
 """Mac mini"""
 
-mini_da = 'https://search.danawa.com/dsearch.php?k1=macmini&module=goods&act=dispMain'
+# mini_da = 'https://search.danawa.com/dsearch.php?k1=macmini&module=goods&act=dispMain'
 
-mini_from_da = get_data_for_da_mac_mini(mini_da, head)
+# mini_from_da = get_data_for_da_mac_mini(mini_da, head)
 
 
 
@@ -155,11 +155,11 @@ mini_from_ref = get_data_for_ref(ref, 'Mac mini', need_mini_list)
 
 """Фильтрация по нужным моделям из списка"""
 
-validated_pro = get_need_data([pro_from_ref, pro_from_ai, pro_from_da, pro_from_tf, pro_from_edu], need_pro_list, row_count=3)
+validated_pro = get_need_data([pro_from_ref, pro_from_ai, pro_from_tf, pro_from_edu], need_pro_list, row_count=3)
 
-validated_air = get_need_data([air_from_refurb, air_from_ai, air_from_da, air_from_tf, air_from_edu ], need_air_list, row_count=len(validated_pro)+5)
+validated_air = get_need_data([air_from_refurb, air_from_ai, air_from_tf, air_from_edu ], need_air_list, row_count=len(validated_pro)+5)
 
-validated_mini = get_need_data([mini_from_ref, mini_from_ai, mini_from_da, mini_from_tf, mini_from_edu], need_mini_list, row_count=len(validated_air)+len(validated_pro)+7)
+validated_mini = get_need_data([mini_from_ref, mini_from_ai, mini_from_tf, mini_from_edu], need_mini_list, row_count=len(validated_air)+len(validated_pro)+7)
 
 
 """Запись в Google Sheets"""
@@ -173,7 +173,7 @@ def main():
 
     """Подключаемся к странице и очищаем её"""
     wks = sh.worksheet('TestData2')
-    wks.batch_clear(["A2:M50"])
+    wks.batch_clear(["A2:F50"])
     
 
 
